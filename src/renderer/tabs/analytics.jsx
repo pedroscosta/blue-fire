@@ -1,7 +1,7 @@
-import React, { Component } from 'react';
+import React from 'react';
 
-export default class AnalyticsTab extends Component {
-  render() {
-    return <div>AnalyticsTab</div>;
-  }
+function AnalyticsTab() {
+  return <div>AnalyticsTab</div>;
 }
+
+export default AnalyticsTab;

@@ -8,10 +8,10 @@ import Divider from '@mui/material/Divider';
 import Node, { contentStyle as style } from '../Node';
 
 const isValidInput = (connection, type) => {
-  return true; //R.last(R.split('__', connection.source)) === type;
+  return true; // R.last(R.split('__', connection.source)) === type;
 };
 const isValidOutput = (connection, type) => {
-  return true; //R.last(R.split('__', connection.target)) === type;
+  return true; // R.last(R.split('__', connection.target)) === type;
 };
 
 // eslint-disable-next-line react/prop-types

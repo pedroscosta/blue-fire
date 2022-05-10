@@ -1,8 +1,7 @@
 import React, { useState } from 'react';
-import icon from '../../../../assets/icon.png';
-//import menu from '../../../main/menu';
-
 import TitleBar from 'frameless-titlebar';
+import icon from '../../../../assets/icon.png';
+// import menu from '../../../main/menu';
 
 const CustomTitlebar = () => {
   /*
@@ -28,7 +27,7 @@ const CustomTitlebar = () => {
     } else {
       window.maximize();
     }
-  }*/
+  } */
 
   return (
     <TitleBar

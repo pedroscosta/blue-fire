@@ -40,8 +40,8 @@ const NewSourceButton = () => {
       header: 1,
     });
 
-    //const cols = dataArray[0];
-    //const headers = cols.map((head) => ({ name: head, label: head }));
+    // const cols = dataArray[0];
+    // const headers = cols.map((head) => ({ name: head, label: head }));
     const headers = dataArray[0];
 
     const data = dataArray.slice(1).map((r) =>
