@@ -12,11 +12,12 @@ import grey from '@material-ui/core/colors/grey';
 import Checkbox from '@mui/material/Checkbox';
 
 const classes = {
-  flexContainer: 'ReactVirtualizedDemo-flexContainer',
-  tableRow: 'ReactVirtualizedDemo-tableRow',
-  tableRowHover: 'ReactVirtualizedDemo-tableRowHover',
-  tableCell: 'ReactVirtualizedDemo-tableCell',
-  noClick: 'ReactVirtualizedDemo-noClick',
+  flexContainer: 'VirtualDataTable-flexContainer',
+  tableRow: 'VirtualDataTable-tableRow',
+  tableRowHover: 'VirtualDataTable-tableRowHover',
+  tableCell: 'VirtualDataTable-tableCell',
+  noClick: 'VirtualDataTable-noClick',
+  tableCol: 'VirtualDataTable-column',
 };
 
 const styles = ({ theme }) => ({
@@ -30,6 +31,16 @@ const styles = ({ theme }) => ({
       paddingRight: undefined,
     }),
   },
+  '& .ReactVirtualized__Table__headerColumn': {
+    display: 'flex',
+    minWidth: '200px',
+    'border-style': 'solid',
+    'border-width': '0px 1px 0px 0px',
+    'border-color': 'rgba(224, 224, 224, 1)',
+    '&:last-child': {
+      'border-width': '0px 0px 0px 0px',
+    },
+  },
   [`& .${classes.flexContainer}`]: {
     display: 'flex',
     alignItems: 'center',
@@ -37,6 +48,9 @@ const styles = ({ theme }) => ({
   },
   [`& .${classes.tableRow}`]: {
     cursor: 'pointer',
+    '&:hover': {
+      backgroundColor: grey[200],
+    },
   },
   [`& .${classes.tableRowHover}`]: {
     '&:hover': {
@@ -48,6 +62,16 @@ const styles = ({ theme }) => ({
   },
   [`& .${classes.noClick}`]: {
     cursor: 'initial',
+  },
+  [`& .${classes.tableCol}`]: {
+    display: 'flex',
+    minWidth: '200px',
+    'border-style': 'solid',
+    'border-width': '0px 1px 1px 0px',
+    'border-color': 'rgba(224, 224, 224, 1)',
+    '&:last-child': {
+      'border-width': '0px 0px 0px 0px',
+    },
   },
 });
 
@@ -93,7 +117,7 @@ class VirtualizedDataTable extends React.PureComponent {
   };
 
   headerRenderer = ({ dataKey, isSelected, columnIndex }) => {
-    const { headerHeight, columns } = this.props;
+    const { headerHeight, columns, selectableRows } = this.props;
     const { selectedCols } = this.state;
 
     return (
@@ -108,21 +132,23 @@ class VirtualizedDataTable extends React.PureComponent {
         style={{ height: headerHeight }}
         align="left"
       >
-        <Checkbox
-          color="primary"
-          checked={isSelected}
-          onChange={(event) =>
-            this.setState((state, props) => ({
-              ...state,
-              selectedCols: event.target.checked
-                ? [...state.selectedCols, dataKey]
-                : state.selectedCols.filter((c) => c !== dataKey),
-            }))
-          }
-          inputProps={{
-            'aria-label': 'select all desserts',
-          }}
-        />
+        {selectableRows && (
+          <Checkbox
+            color="primary"
+            checked={isSelected}
+            onChange={(event) =>
+              this.setState((state, props) => ({
+                ...state,
+                selectedCols: event.target.checked
+                  ? [...state.selectedCols, dataKey]
+                  : state.selectedCols.filter((c) => c !== dataKey),
+              }))
+            }
+            inputProps={{
+              'aria-label': 'select all desserts',
+            }}
+          />
+        )}
         <span>{dataKey}</span>
       </TableCell>
     );
@@ -131,12 +157,13 @@ class VirtualizedDataTable extends React.PureComponent {
   render() {
     const { data, rowHeight, headerHeight, ...tableProps } = this.props;
     const { rows, headers, selectedCols } = this.state;
+    const cellWidth = 200;
     return (
       <AutoSizer>
         {({ height, width }) => (
           <Table
             height={height}
-            width={width}
+            width={Math.min(width, headers.length * cellWidth)}
             rowHeight={rowHeight}
             gridStyle={{
               direction: 'inherit',
@@ -158,10 +185,10 @@ class VirtualizedDataTable extends React.PureComponent {
                       columnIndex: index,
                     })
                   }
-                  className={classes.flexContainer}
+                  className={(classes.flexContainer, classes.tableCol)}
                   cellRenderer={this.cellRenderer}
                   dataKey={col}
-                  width="200"
+                  width={cellWidth}
                 />
               );
             })}

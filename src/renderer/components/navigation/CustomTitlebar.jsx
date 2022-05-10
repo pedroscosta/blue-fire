@@ -40,7 +40,7 @@ const CustomTitlebar = () => {
           // to your application :)
         }
       }
-      title="Fenix BI"
+      title="BlueFire"
       onClose={() => window.electron.closeWindow()}
       onMinimize={() => window.electron.minimizeWindow()}
       onMaximize={() => window.electron.maximizeWindow()}

@@ -29,6 +29,9 @@ const NewSourceButton = () => {
   const [activeStep, setActiveStep] = React.useState(0);
   const [curFile, setCurFile] = React.useState(null);
   const [previewData, setPreviewData] = React.useState(null);
+  const [selectedRows, setSelectedRows] = React.useState(null);
+
+  // File loader
 
   const handleFile = async (file) => {
     const arrayBuffer = await file.arrayBuffer();
@@ -116,7 +119,7 @@ const NewSourceButton = () => {
                 );
               })}
             </Stepper>
-            <>
+            <Box sx={{ pt: 3 }}>
               {activeStep === 0 ? (
                 <>
                   <DropzoneAreaBase
@@ -130,7 +133,11 @@ const NewSourceButton = () => {
               ) : (
                 <>
                   <Paper style={{ height: 400, width: '100%' }}>
-                    <VirtualizedDataTable data={previewData} />
+                    <VirtualizedDataTable
+                      data={previewData}
+                      handleRowSelect={(sr) => setSelectedRows(setSelectedRows)}
+                      selectableRows
+                    />
                   </Paper>
                 </>
               )}
@@ -149,10 +156,9 @@ const NewSourceButton = () => {
                   {activeStep === steps.length - 1 ? 'Finish' : 'Next'}
                 </Button>
               </Box>
-            </>
+            </Box>
           </Box>
         </DialogContent>
-        <DialogActions>Close</DialogActions>
       </Dialog>
     </div>
   );
