@@ -6,7 +6,7 @@ contextBridge.exposeInMainWorld('electron', {
   maximizeWindow: () => ipcRenderer.send('maximizeWindow'),
   isWindowMaximized: () => ipcRenderer.invoke('isWindowMaximized'),
   ipcRenderer: {
-    myPing() { 
+    myPing() {
       ipcRenderer.send('ipc-example', 'ping');
     },
     on(channel, func) {
@@ -24,7 +24,7 @@ contextBridge.exposeInMainWorld('electron', {
       }
     },
     send(channel) {
-      ipcRenderer.send(channel)
-    }
-  }
+      ipcRenderer.send(channel);
+    },
+  },
 });

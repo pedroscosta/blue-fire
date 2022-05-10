@@ -19,8 +19,8 @@ import StepLabel from '@mui/material/StepLabel';
 import Button from '@mui/material/Button';
 import { DropzoneAreaBase } from 'material-ui-dropzone';
 import MUIDataTable from 'mui-datatables';
-import VirtualizedDataTable from '../table/VirtualizedDataTable';
 import { Paper } from '@mui/material';
+import VirtualizedDataTable from '../table/VirtualizedDataTable';
 
 const steps = ['Load your data', 'Select fields'];
 
