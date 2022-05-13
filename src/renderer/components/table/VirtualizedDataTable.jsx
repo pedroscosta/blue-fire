@@ -26,7 +26,7 @@ import ConditionalWrapper from '../utils/ConditionalWrapper';
 const FOOTER_BORDER_HEIGHT = 1;
 
 function descendingComparator(a, b, orderBy) {
-  console.log(a, b, orderBy);
+  // console.log(a, b, orderBy);
   if (b[orderBy] < a[orderBy]) {
     return -1;
   }
@@ -41,7 +41,7 @@ function getComparator(order, orderBy) {
     ? (a, b) => descendingComparator(a, b, orderBy)
     : (a, b) => -descendingComparator(a, b, orderBy);
 }
-
+// TODO: Replace with emotion
 const useStyles = makeStyles((theme) => ({
   table: {
     boxSizing: 'border-box',
@@ -330,14 +330,14 @@ const VirtualizedDataTable = ({
     [resizeRow]
   );
 
-  const handleMouse = React.useCallback(
+  /* const handleMouse = React.useCallback(
     (hoveredColumn, hoveredRowData) => (e) =>
       setHovered({
         hoveredColumn,
         hoveredRowData,
       }),
     [setHovered]
-  );
+  ); */
 
   const cellRenderer = ({ columnIndex, rowIndex, key, style }) => {
     const column = columns[columnIndex];
@@ -422,8 +422,8 @@ const VirtualizedDataTable = ({
         component="div"
         className={className}
         key={key}
-        onMouseEnter={handleMouse(column, rowData)}
-        onMouseLeave={handleMouse(null, null)}
+        /* onMouseEnter={handleMouse(column, rowData)}
+        onMouseLeave={handleMouse(null, null)} */
         style={{
           ...style,
           ...cellStyle,
@@ -538,7 +538,7 @@ const VirtualizedDataTable = ({
 };
 
 VirtualizedDataTable.propTypes = {
-  data: PropTypes.array,
+  data: PropTypes.object,
   columns: PropTypes.array,
   width: PropTypes.number,
   height: PropTypes.number,
