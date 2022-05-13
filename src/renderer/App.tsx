@@ -23,7 +23,6 @@ export default function App() {
         flexDirection: 'column',
       }}
     >
-      <CustomTitlebar />
       <TabContext value={currentTab}>
         <Box sx={{ borderBottom: 1, borderColor: 'divider' }}>
           <TabList
@@ -32,6 +31,7 @@ export default function App() {
             }}
             centered
           >
+            a
             <Tab label="Data" value="data" style={{ padding: 0 }} />
             <Tab label="Analytics" value="analytics" />
           </TabList>

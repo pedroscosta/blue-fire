@@ -36,7 +36,7 @@ const NewSourceButton = () => {
   const handleFile = async (file) => {
     const arrayBuffer = await file.arrayBuffer();
     /* data is an ArrayBuffer */
-    const workbook = XLSX.read(arrayBuffer, { sheetRows: 20 });
+    const workbook = XLSX.read(arrayBuffer);
 
     const worksheet = workbook.Sheets[workbook.SheetNames[0]];
     const dataArray = XLSX.utils.sheet_to_json(worksheet, {
@@ -45,7 +45,7 @@ const NewSourceButton = () => {
 
     // const cols = dataArray[0];
     // const headers = cols.map((head) => ({ name: head, label: head }));
-    const headers = dataArray[0];
+    const columns = dataArray[0];
 
     const data = dataArray.slice(1).map((r) =>
       r.reduce((acc, x, i) => {
@@ -54,7 +54,7 @@ const NewSourceButton = () => {
       }, {})
     );
 
-    setPreviewData({ headers, data });
+    setPreviewData({ columns, data });
     handleNext();
   };
 
@@ -96,7 +96,7 @@ const NewSourceButton = () => {
           <IconButton
             aria-label="close"
             onClick={handleClose}
-            sx={{
+            style={{
               position: 'absolute',
               right: 8,
               top: 8,
@@ -135,8 +135,9 @@ const NewSourceButton = () => {
                   <Paper style={{ height: 400, width: '100%' }}>
                     <VirtualizedDataTable
                       data={previewData}
-                      handleRowSelect={(sr) => setSelectedRows(setSelectedRows)}
                       selectableRows
+                      orderBy="col1"
+                      sortable
                     />
                   </Paper>
                 </>

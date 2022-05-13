@@ -9,10 +9,17 @@
   body {
     display: flex;
     align-items: stretch;
+    flex-direction: column;
   }
-  
+
   #root {
     width: 100%;
     display: flex;
   }
-  
+
+.title {
+  z-Index: 2000;
+  height: 28px;
+  display: flex;
+  flex: 1 1 100%;
+}
