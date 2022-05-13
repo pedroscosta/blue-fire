@@ -31,7 +31,6 @@ export default function App() {
             }}
             centered
           >
-            a
             <Tab label="Data" value="data" style={{ padding: 0 }} />
             <Tab label="Analytics" value="analytics" />
           </TabList>
