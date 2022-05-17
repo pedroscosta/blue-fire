@@ -24,7 +24,7 @@ const FunctionNode = ({ data, selected }) => {
       content={
         <>
           <List sx={style.list} component="nav" aria-label="mailbox folders">
-            {data.rows.map((input, i, { length }) => (
+            {data.columns.map((input, i, { length }) => (
               <>
                 <ListItem
                   sx={{ textAlign: 'center' }}

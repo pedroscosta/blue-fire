@@ -66,8 +66,6 @@ export default function DataEdge({
     pathRef,
   } = usePointsOnPath(edgePath, [center]);
 
-  console.log(data);
-
   return (
     <>
       <path

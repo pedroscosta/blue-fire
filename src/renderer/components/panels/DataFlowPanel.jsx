@@ -1,14 +1,23 @@
+/* eslint-disable react-hooks/exhaustive-deps */
+/* eslint-disable react/prop-types */
+/* eslint-disable @typescript-eslint/no-unused-vars */
 /* eslint-disable @typescript-eslint/no-use-before-define */
-import React, { useCallback, useState, useEffect } from 'react';
+import React, {
+  useCallback,
+  useState,
+  useEffect,
+  useImperativeHandle,
+} from 'react';
 import ReactFlow, {
   removeElements,
   addEdge,
-  isEdge,
   Background,
   Controls,
   MiniMap,
-  applyEdgeChanges,
   applyNodeChanges,
+  useNodesState,
+  useEdgesState,
+  useReactFlow,
 } from 'react-flow-renderer';
 import DataNode from '../flow/data/DataNode';
 import DataEdge from '../flow/Edge';
@@ -17,34 +26,7 @@ const nodeTypes = { dataNode: DataNode };
 
 const edgeTypes = { dataEdge: DataEdge };
 
-const newElements = [
-  {
-    id: '4',
-    type: 'dataNode',
-    data: {
-      label: 'Test',
-      file: 'test.csv',
-      rows: ['id', 'name', 'email', 'password'],
-    },
-    position: { x: 0, y: 0 },
-  },
-  {
-    id: '2',
-    type: 'dataNode',
-    data: {
-      label: 'Test2',
-      file: 'test.csv',
-      rows: ['id', 'name', 'email', 'password'],
-    },
-    position: { x: 0, y: 0 },
-  },
-  {
-    id: '1',
-    type: 'input',
-    data: { label: 'Input Node' },
-    position: { x: 250, y: 25 },
-  },
-];
+const newElements = [];
 
 const initialEdges = [];
 
@@ -54,12 +36,26 @@ const onNodeContextMenu = (event, node) => {
   event.preventDefault();
 };
 
-const DataFlow = () => {
-  const [elements, setElements] = useState(newElements);
-  const [edges, setEdges] = useState(initialEdges);
+const DataFlow = React.forwardRef((props, ref) => {
+  const { initialState } = props;
+  const [nodes, setNodes, onNodesChange] = useNodesState(initialState.nodes);
+  const [edges, setEdges, onEdgesChange] = useEdgesState(initialState.edges);
+
+  const { fitView } = useReactFlow();
 
   const onElementsRemove = (elementsToRemove) =>
-    setElements((els) => removeElements(elementsToRemove, els));
+    setNodes((els) => removeElements(elementsToRemove, els));
+
+  const onEdgeRemove = useCallback(
+    (id) => {
+      setEdges((eds) =>
+        eds.filter((edge) => {
+          return edge.id !== id;
+        })
+      );
+    },
+    [setEdges]
+  );
 
   const onConnect = useCallback(
     (connection) =>
@@ -73,37 +69,53 @@ const DataFlow = () => {
           eds
         )
       ),
-    [setEdges]
+    [onEdgeRemove, setEdges]
   );
 
-  const onNodesChange = useCallback(
-    (changes) => setElements((nds) => applyNodeChanges(changes, nds)),
-    [setElements]
+  const insertDataNode = useCallback(
+    (newNode) => {
+      setNodes((nds) => nds.concat(newNode));
+      fitView({ duration: 100, padding: 0.3 });
+    },
+    [setNodes, fitView]
   );
 
-  const onEdgesChange = useCallback(
-    (changes) => setEdges((eds) => applyEdgeChanges(changes, eds)),
-    [setEdges]
+  const createNodeFromData = useCallback(
+    (tableName, columns, file) =>
+      insertDataNode({
+        id: `${tableName}-node`,
+        type: 'dataNode',
+        position: {
+          x: Math.random() * 300,
+          y: Math.random() * 300,
+        },
+        data: {
+          label: tableName,
+          file,
+          columns,
+        },
+      }),
+    [insertDataNode]
   );
 
-  const onEdgeRemove = (id) => {
-    setEdges((eds) =>
-      eds.filter((edge) => {
-        return edge.id !== id;
-      })
-    );
-  };
+  useImperativeHandle(ref, () => ({
+    insertDataNode,
+    createNodeFromData,
+  }));
 
   React.useEffect(() => {
-    console.log('Component1 has mounted...');
     return () => {
-      console.log('Component1 has unmounted...');
+      onUnmount();
     };
-  }, []);
+  }, [nodes, edges]);
+
+  const onUnmount = useCallback(() => {
+    props.onChange(nodes, edges);
+  }, [nodes, edges]);
 
   return (
     <ReactFlow
-      nodes={elements}
+      nodes={nodes}
       edges={edges}
       onNodesChange={onNodesChange}
       onEdgesChange={onEdgesChange}
@@ -135,6 +147,6 @@ const DataFlow = () => {
       />
     </ReactFlow>
   );
-};
+});
 
 export default DataFlow;

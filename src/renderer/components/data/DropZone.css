@@ -1,0 +1,8 @@
+.MuiDropzoneArea-root {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-content: stretch;
+  justify-content: center;
+  align-items: center;
+}

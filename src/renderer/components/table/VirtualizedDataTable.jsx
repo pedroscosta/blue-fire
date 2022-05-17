@@ -26,7 +26,6 @@ import ConditionalWrapper from '../utils/ConditionalWrapper';
 const FOOTER_BORDER_HEIGHT = 1;
 
 function descendingComparator(a, b, orderBy) {
-  // console.log(a, b, orderBy);
   if (b[orderBy] < a[orderBy]) {
     return -1;
   }
@@ -204,6 +203,7 @@ const VirtualizedDataTable = ({
   cellProps,
   selectableRows,
   sortable,
+  onColumnSelect,
   resizableColumns,
   onRequestSort,
   sort,
@@ -445,13 +445,17 @@ const VirtualizedDataTable = ({
           <Checkbox
             color="primary"
             checked={selectedCols.indexOf(column.name) !== -1}
-            onChange={(event) =>
-              setSelectedCols((selected) =>
-                event.target.checked
+            onChange={(event) => {
+              setSelectedCols((selected) => {
+                const newSelection = event.target.checked
                   ? [...selected, column.name]
-                  : selected.filter((c) => c !== column.name)
-              )
-            }
+                  : selected.filter((c) => c !== column.name);
+
+                onColumnSelect && onColumnSelect(newSelection);
+
+                return newSelection;
+              });
+            }}
             inputProps={{
               'aria-label': `Select ${column.name}`,
             }}

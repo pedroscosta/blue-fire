@@ -1,3 +1,4 @@
+/* eslint-disable react/prop-types */
 /* eslint-disable @typescript-eslint/no-use-before-define */
 /* eslint-disable react/jsx-props-no-spreading */
 import React, { useState } from 'react';
@@ -20,16 +21,20 @@ import Button from '@mui/material/Button';
 import { DropzoneAreaBase } from 'material-ui-dropzone';
 import MUIDataTable from 'mui-datatables';
 import { Paper } from '@mui/material';
+import { stripFileExtension } from '../../utils/string';
 import VirtualizedDataTable from '../table/VirtualizedDataTable';
+import EditableTextField from '../general/EditableTextField';
+import './DropZone.css';
 
 const steps = ['Load your data', 'Select fields'];
 
-const NewSourceButton = () => {
+const NewSourceButton = ({ handleTableLoad }) => {
   const [open, setOpen] = useState(false);
   const [activeStep, setActiveStep] = React.useState(0);
   const [curFile, setCurFile] = React.useState(null);
+  const [tableName, setTableName] = React.useState(null);
   const [previewData, setPreviewData] = React.useState(null);
-  const [selectedRows, setSelectedRows] = React.useState(null);
+  const [selectedCols, setSelectedCols] = React.useState(null);
 
   // File loader
 
@@ -39,9 +44,11 @@ const NewSourceButton = () => {
     const workbook = XLSX.read(arrayBuffer);
 
     const worksheet = workbook.Sheets[workbook.SheetNames[0]];
-    const dataArray = XLSX.utils.sheet_to_json(worksheet, {
-      header: 1,
-    });
+    const dataArray = XLSX.utils
+      .sheet_to_json(worksheet, {
+        header: 1,
+      })
+      .filter((row) => row.length > 0);
 
     // const cols = dataArray[0];
     // const headers = cols.map((head) => ({ name: head, label: head }));
@@ -54,6 +61,7 @@ const NewSourceButton = () => {
       }, {})
     );
 
+    setSelectedCols(columns);
     setPreviewData({ columns, data });
     handleNext();
   };
@@ -74,6 +82,19 @@ const NewSourceButton = () => {
 
   const handleNext = () => {
     if (activeStep === steps.length - 1) {
+      const data = {
+        columns: selectedCols,
+        data: previewData.data.map((row) =>
+          Object.keys(row)
+            .filter((key) => selectedCols.includes(key))
+            .reduce((obj, key) => {
+              obj[key] = row[key];
+              return obj;
+            }, {})
+        ),
+      };
+
+      handleTableLoad(tableName, data, curFile);
       handleClose();
     } else {
       setActiveStep((prevActiveStep) => prevActiveStep + 1);
@@ -106,8 +127,15 @@ const NewSourceButton = () => {
             <CloseIcon />
           </IconButton>
         </DialogTitle>
-        <DialogContent>
-          <Box sx={{ width: '100%' }}>
+        <DialogContent style={{ height: '70vh', display: 'flex' }}>
+          <Box
+            sx={{
+              width: '100%',
+              flex: 1,
+              display: 'flex',
+              flexDirection: 'column',
+            }}
+          >
             <Stepper activeStep={activeStep} alternativeLabel>
               {steps.map((label, index) => {
                 const stepProps = {};
@@ -119,26 +147,48 @@ const NewSourceButton = () => {
                 );
               })}
             </Stepper>
-            <Box sx={{ pt: 3 }}>
+            <Box
+              sx={{
+                pt: 3,
+                display: 'flex',
+                flexDirection: 'column',
+                flex: '1 1 auto',
+              }}
+            >
               {activeStep === 0 ? (
-                <>
-                  <DropzoneAreaBase
-                    onAdd={(fileObjs) => {
-                      setCurFile(fileObjs);
-                      handleFile(fileObjs[0].file);
-                    }}
-                    showAlerts={false}
-                  />
-                </>
+                <DropzoneAreaBase
+                  onAdd={(fileObjs) => {
+                    setCurFile(fileObjs[0]);
+                    setTableName(stripFileExtension(fileObjs[0].file.name));
+                    handleFile(fileObjs[0].file);
+                  }}
+                  showAlerts={false}
+                />
               ) : (
                 <>
-                  <Paper style={{ height: 400, width: '100%' }}>
-                    <VirtualizedDataTable
-                      data={previewData}
-                      selectableRows
-                      orderBy="col1"
-                      sortable
+                  <Paper
+                    style={{
+                      width: '100%',
+                      display: 'flex',
+                      flexDirection: 'column',
+                      flex: 1,
+                    }}
+                  >
+                    <EditableTextField
+                      startValue={stripFileExtension(curFile.file.name)}
+                      fieldStyle={{ padding: 10, marginLeft: '25px' }}
+                      onChange={(value) => setTableName(value)}
+                      fontSize="25px"
                     />
+                    <div style={{ flex: 1 }}>
+                      <VirtualizedDataTable
+                        data={previewData}
+                        selectableRows
+                        onColumnSelect={(cols) => setSelectedCols(cols)}
+                        orderBy="col1"
+                        sortable
+                      />
+                    </div>
                   </Paper>
                 </>
               )}

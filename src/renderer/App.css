@@ -18,6 +18,12 @@
     flex: 1 1 100%;
   }
 
+  #app {
+    display: flex;
+    flex-direction: column;
+    flex: 1;
+  }
+
 .title {
   z-Index: 2000;
   height: 28px;

@@ -9,11 +9,12 @@
  * `./src/main.js` using webpack. This gives us some performance wins.
  */
 import path from 'path';
-import { app, BrowserWindow, shell, ipcMain } from 'electron';
+import { app, BrowserWindow, shell, ipcMain, dialog } from 'electron';
 import { autoUpdater } from 'electron-updater';
 import log from 'electron-log';
-import MenuBuilder from './menu';
 import { resolveHtmlPath } from './util';
+
+const fs = require('fs');
 
 export default class AppUpdater {
   constructor() {
@@ -100,9 +101,6 @@ const createWindow = async () => {
     mainWindow = null;
   });
 
-  const menuBuilder = new MenuBuilder(mainWindow);
-  menuBuilder.buildMenu();
-
   // Open urls in the user's browser
   mainWindow.webContents.setWindowOpenHandler((edata) => {
     shell.openExternal(edata.url);
@@ -158,4 +156,23 @@ ipcMain.on('maximizeWindow', () => {
 
 ipcMain.handle('isWindowMaximized', () => {
   return mainWindow?.isMaximized();
+});
+
+// App functions
+
+ipcMain.handle('BF_CORE_SAVE_FILE_AS', async (event, store) => {
+  const { filePath, canceled } = await dialog.showSaveDialog({
+    defaultPath: 'default.bf',
+    filters: [
+      { name: 'BlueFire Project', extensions: ['bf'] },
+      { name: 'All Files', extensions: ['*'] },
+    ],
+  });
+
+  if (filePath && !canceled) {
+    const data = new Uint8Array(Buffer.from(JSON.stringify(store))); // TODO: Maybe add a compression algorithm
+    fs.writeFile(filePath, data, (err: any) => {
+      if (err) throw err;
+    });
+  }
 });

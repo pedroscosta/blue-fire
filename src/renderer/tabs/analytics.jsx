@@ -1,7 +1,11 @@
+/* eslint-disable react/prop-types */
 import React from 'react';
+import { connect } from 'react-redux';
 
-function AnalyticsTab() {
-  return <div>AnalyticsTab</div>;
+function AnalyticsTab({ loadedData, dispatch }) {
+  return <div>{JSON.stringify(loadedData)}</div>;
 }
 
-export default AnalyticsTab;
+export default connect((state) => ({ loadedData: state.loadedData }))(
+  AnalyticsTab
+);

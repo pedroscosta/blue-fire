@@ -1,9 +1,12 @@
+/* eslint-disable react/prop-types */
+/* eslint-disable import/no-named-as-default */
 import React, { useState } from 'react';
 import TitleBar from 'frameless-titlebar';
+import { connect } from 'react-redux';
 import icon from '../../../../assets/icon.png';
-// import menu from '../../../main/menu';
+import { useMenu } from './menu';
 
-const CustomTitlebar = () => {
+const CustomTitlebar = ({ store, dispatch }) => {
   /*
   // manage window state, default to currentWindow maximized state
   const [maximized, setMaximized] = useState(window.isMaximized());
@@ -29,6 +32,8 @@ const CustomTitlebar = () => {
     }
   } */
 
+  const defaultMenu = useMenu(store);
+
   return (
     <TitleBar
       iconSrc={icon} // app icon
@@ -52,10 +57,13 @@ const CustomTitlebar = () => {
       disableMaximize={false}
       // is the current window maximized?
       maximized={window.electron.isWindowMaximized()}
+      menu={defaultMenu}
     >
       {/* custom titlebar items */}
     </TitleBar>
   );
 };
 
-export default CustomTitlebar;
+export default connect((state) => ({
+  store: state,
+}))(CustomTitlebar);

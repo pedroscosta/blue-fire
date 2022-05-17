@@ -28,3 +28,7 @@ contextBridge.exposeInMainWorld('electron', {
     },
   },
 });
+
+contextBridge.exposeInMainWorld('bfCore', {
+  saveFileAs: (store) => ipcRenderer.invoke('BF_CORE_SAVE_FILE_AS', store),
+});
