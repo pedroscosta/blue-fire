@@ -158,7 +158,7 @@ const NewSourceButton = ({ handleTableLoad }) => {
               {activeStep === 0 ? (
                 <DropzoneAreaBase
                   onAdd={(fileObjs) => {
-                    setCurFile(fileObjs[0]);
+                    setCurFile(fileObjs[0].file.path);
                     setTableName(stripFileExtension(fileObjs[0].file.name));
                     handleFile(fileObjs[0].file);
                   }}
@@ -175,7 +175,7 @@ const NewSourceButton = ({ handleTableLoad }) => {
                     }}
                   >
                     <EditableTextField
-                      startValue={stripFileExtension(curFile.file.name)}
+                      startValue={tableName}
                       fieldStyle={{ padding: 10, marginLeft: '25px' }}
                       onChange={(value) => setTableName(value)}
                       fontSize="25px"

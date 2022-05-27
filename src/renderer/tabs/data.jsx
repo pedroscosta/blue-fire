@@ -10,6 +10,7 @@ import MenuIcon from '@mui/icons-material/Menu';
 import Button from '@mui/material/Button';
 import DataFlow from '../components/panels/DataFlowPanel';
 import NewSourceButton from '../components/data/NewSourceButton';
+import { getFileFromPath } from '../utils/string';
 
 const loadData = (files, tables) => {
   return {
@@ -55,7 +56,7 @@ const DataTab = ({ loadedData, storedFlowState, dataModel, dispatch }) => {
     dataFlow.current.createNodeFromData(
       tableName,
       data.columns,
-      file.file.name
+      getFileFromPath(file)
     );
   };
 

@@ -30,5 +30,12 @@ contextBridge.exposeInMainWorld('electron', {
 });
 
 contextBridge.exposeInMainWorld('bfCore', {
-  saveFileAs: (store) => ipcRenderer.invoke('BF_CORE_SAVE_FILE_AS', store),
+  saveFileAs: async (stored) => {
+    return ipcRenderer.invoke('BF_CORE_SAVE_FILE_AS', stored);
+  },
+  saveFile: (stored) => {
+    ipcRenderer.invoke('BF_CORE_SAVE_FILE', stored);
+  },
+  openFile: () => ipcRenderer.invoke('BF_CORE_OPEN_FILE'),
+  appData: () => ipcRenderer.invoke('BF_CORE_GET_APP_DATA'),
 });

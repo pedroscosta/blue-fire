@@ -19,8 +19,10 @@ import ReactFlow, {
   useEdgesState,
   useReactFlow,
 } from 'react-flow-renderer';
+import { useCustomEventListener } from 'react-custom-events';
 import DataNode from '../flow/data/DataNode';
 import DataEdge from '../flow/Edge';
+import store from '../../store/store';
 
 const nodeTypes = { dataNode: DataNode };
 
@@ -112,6 +114,13 @@ const DataFlow = React.forwardRef((props, ref) => {
   const onUnmount = useCallback(() => {
     props.onChange(nodes, edges);
   }, [nodes, edges]);
+
+  useCustomEventListener('BF_CORE.REFETCH_STORED_DATA', () => {
+    const storedState = store.getState().flowState;
+
+    setNodes(storedState.nodes);
+    setEdges(storedState.edges);
+  });
 
   return (
     <ReactFlow

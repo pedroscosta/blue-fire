@@ -4,6 +4,7 @@ const INITIAL_STATE = {
   flowState: { nodes: [], edges: [] },
   dataModel: { connections: {} },
   loadedData: { files: {}, tables: {} },
+  projectData: {},
 };
 
 const actions = {
@@ -23,6 +24,18 @@ const actions = {
     return {
       ...state,
       flowState: { nodes: action.nodes, edges: action.edges },
+    };
+  },
+  BF_CORE_LOAD_PROJECT: (action, state) => {
+    return {
+      ...action.fileData,
+      projectData: { ...action.fileData.projectData, path: action.filePath },
+    };
+  },
+  BF_CORE_SET_CUR_PROJ_PATH: (action, state) => {
+    return {
+      ...state,
+      projectData: { ...state.projectData, path: action.path },
     };
   },
 };

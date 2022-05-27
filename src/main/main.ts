@@ -13,8 +13,9 @@ import { app, BrowserWindow, shell, ipcMain, dialog } from 'electron';
 import { autoUpdater } from 'electron-updater';
 import log from 'electron-log';
 import { resolveHtmlPath } from './util';
+import { getAppVersion, saveStoreContents } from './utils/app';
 
-const fs = require('fs');
+const fs = require('fs').promises;
 
 export default class AppUpdater {
   constructor() {
@@ -170,9 +171,35 @@ ipcMain.handle('BF_CORE_SAVE_FILE_AS', async (event, store) => {
   });
 
   if (filePath && !canceled) {
-    const data = new Uint8Array(Buffer.from(JSON.stringify(store))); // TODO: Maybe add a compression algorithm
-    fs.writeFile(filePath, data, (err: any) => {
-      if (err) throw err;
-    });
+    saveStoreContents(store, filePath);
+    return filePath;
   }
+
+  return undefined;
 });
+
+ipcMain.handle('BF_CORE_SAVE_FILE', (event, store) => {
+  saveStoreContents(store);
+});
+
+ipcMain.handle('BF_CORE_OPEN_FILE', async () => {
+  const { filePaths, canceled } = await dialog.showOpenDialog({
+    properties: ['openFile'],
+    filters: [
+      { name: 'BlueFire Project', extensions: ['bf'] },
+      { name: 'All Files', extensions: ['*'] },
+    ],
+  });
+
+  if (filePaths && !canceled) {
+    const filePath = filePaths[0];
+    const data = await fs.readFile(filePath, 'utf8');
+
+    const fileData = JSON.parse(data);
+    return [fileData, filePath];
+  }
+
+  return undefined;
+});
+
+ipcMain.handle('BF_CORE_GET_APP_DATA', () => ({ version: getAppVersion() }));

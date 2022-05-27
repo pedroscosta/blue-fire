@@ -1,5 +1,8 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 /* eslint-disable import/prefer-default-export */
+import { emitCustomEvent } from 'react-custom-events';
 import { useEffect, useState } from 'react';
+import store from '../../store/store';
 
 const doClick = (queueSnack) => (item, currentWindow, e) => {
   // let label = `Item Clicked: ${item.label}!`;
@@ -12,10 +15,10 @@ const doClick = (queueSnack) => (item, currentWindow, e) => {
   //   variant = item.checked ? 'success' : 'error';
   // }
   // queueSnack(label, { variant });
-  console.log(item);
+  console.log(store.getState());
 };
 
-const createMenu = (store) => {
+const createMenu = (storeState) => {
   const click = doClick();
   return [
     {
@@ -24,23 +27,40 @@ const createMenu = (store) => {
         {
           label: 'New File',
           accelerator: 'Ctrl+N',
-          click,
+          click: () => {
+            console.log(store.getState());
+          },
         },
         {
           label: 'Open File',
           accelerator: 'Ctrl+O',
-          click,
+          click: async () => {
+            const [fileData, filePath] = await window.bfCore.openFile(); // TODO: Handle errors
+
+            store.dispatch({
+              type: 'BF_CORE_LOAD_PROJECT',
+              fileData,
+              filePath,
+            });
+
+            emitCustomEvent('BF_CORE.REFETCH_STORED_DATA'); // Dispatching a custom event to all listening components to avoid any complicated refetch from the store.
+          },
         },
         {
           label: 'Save File',
           accelerator: 'Ctrl+S',
-          click,
+          click: () => {
+            window.bfCore.saveFile(store.getState());
+          },
         },
         {
           label: 'Save File As...',
-          accelerator: 'Ctrl+Alt+S',
-          click: () => {
-            window.bfCore.saveFileAs(store);
+          accelerator: 'Ctrl+Shift+S',
+          click: async () => {
+            store.dispatch({
+              type: 'BF_CORE_SET_CUR_PROJ_PATH',
+              path: await window.bfCore.saveFileAs(store.getState()),
+            });
           },
         },
         {
@@ -61,11 +81,11 @@ const createMenu = (store) => {
   ];
 };
 
-export const useMenu = (store) => {
+export const useMenu = (storeState) => {
   const [menu, setMenu] = useState([]);
 
   useEffect(() => {
-    return setMenu(createMenu(store));
+    return setMenu(createMenu(storeState));
   }, []);
 
   return menu;
