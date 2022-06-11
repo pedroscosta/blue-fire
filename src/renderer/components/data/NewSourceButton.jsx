@@ -41,7 +41,7 @@ const NewSourceButton = ({ handleTableLoad }) => {
   const handleFile = async (file) => {
     const arrayBuffer = await file.arrayBuffer();
     /* data is an ArrayBuffer */
-    const workbook = XLSX.read(arrayBuffer);
+    const workbook = XLSX.read(arrayBuffer, { sheetRows: 100 });
 
     const worksheet = workbook.Sheets[workbook.SheetNames[0]];
     const dataArray = XLSX.utils
@@ -162,6 +162,7 @@ const NewSourceButton = ({ handleTableLoad }) => {
                     setTableName(stripFileExtension(fileObjs[0].file.name));
                     handleFile(fileObjs[0].file);
                   }}
+                  maxFileSize={10000000000}
                   showAlerts={false}
                 />
               ) : (

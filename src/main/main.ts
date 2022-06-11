@@ -1,3 +1,7 @@
+/* eslint-disable no-continue */
+/* eslint-disable no-await-in-loop */
+/* eslint-disable no-restricted-syntax */
+/* eslint-disable @typescript-eslint/no-explicit-any */
 /* eslint global-require: off, no-console: off, promise/always-return: off */
 
 /**
@@ -14,6 +18,7 @@ import { autoUpdater } from 'electron-updater';
 import log from 'electron-log';
 import { resolveHtmlPath } from './util';
 import { getAppVersion, saveStoreContents } from './utils/app';
+import { readXLSX } from './utils/dataSources';
 
 const fs = require('fs').promises;
 
@@ -48,7 +53,7 @@ if (isDevelopment) {
 const installExtensions = async () => {
   const installer = require('electron-devtools-installer');
   const forceDownload = !!process.env.UPGRADE_EXTENSIONS;
-  const extensions = ['REACT_DEVELOPER_TOOLS'];
+  const extensions = ['REACT_DEVELOPER_TOOLS', 'REDUX_DEVTOOLS'];
 
   return installer
     .default(
@@ -137,7 +142,9 @@ app
   })
   .catch(console.log);
 
-// Custom Titlebar
+/* ===================================================================================================================
+      Title bar
+ =================================================================================================================== */
 
 ipcMain.on('closeWindow', () => {
   mainWindow?.close();
@@ -159,9 +166,11 @@ ipcMain.handle('isWindowMaximized', () => {
   return mainWindow?.isMaximized();
 });
 
-// App functions
+/* ===================================================================================================================
+      Menu functions
+ =================================================================================================================== */
 
-ipcMain.handle('BF_CORE_SAVE_FILE_AS', async (event, store) => {
+ipcMain.handle('BF_CORE_SAVE_FILE_AS', async (_event, store) => {
   const { filePath, canceled } = await dialog.showSaveDialog({
     defaultPath: 'default.bf',
     filters: [
@@ -178,7 +187,7 @@ ipcMain.handle('BF_CORE_SAVE_FILE_AS', async (event, store) => {
   return undefined;
 });
 
-ipcMain.handle('BF_CORE_SAVE_FILE', (event, store) => {
+ipcMain.handle('BF_CORE_SAVE_FILE', (_event, store) => {
   saveStoreContents(store);
 });
 
@@ -203,3 +212,45 @@ ipcMain.handle('BF_CORE_OPEN_FILE', async () => {
 });
 
 ipcMain.handle('BF_CORE_GET_APP_DATA', () => ({ version: getAppVersion() }));
+
+/* ===================================================================================================================
+      Loading data sources
+ =================================================================================================================== */
+
+ipcMain.handle('BF_CORE_RELOAD_DATA_SOURCES', async (_event, dataModel) => {
+  // Had to use a for loop here instead of forEach (or similar) because for loops are "async aware", meaning: they execute async statements in the right order.
+  for (const [file, values] of Object.entries<any>(dataModel.tables)) {
+    mainWindow?.webContents.send('BF_CORE_LOAD_DATA_RESPONSE', {
+      type: 'START_FILE',
+      payload: { file },
+    });
+
+    let fileData;
+
+    try {
+      fileData = await fs.readFile(values.file);
+    } catch (e) {
+      mainWindow?.webContents.send('BF_CORE_LOAD_DATA_RESPONSE', {
+        type: 'FILE_FAIL',
+        payload: { file },
+      });
+
+      continue;
+    }
+
+    const [columns, data] = readXLSX(fileData);
+
+    mainWindow?.webContents.send('BF_CORE_LOAD_DATA_RESPONSE', {
+      type: 'LOADED_FILE',
+      payload: { file, columns, data },
+    });
+  }
+  mainWindow?.webContents.send('BF_CORE_LOAD_DATA_RESPONSE', {
+    type: 'END',
+  });
+});
+
+// setInterval(() => {
+//   mainWindow?.webContents.send('BF_CORE_LOAD_DATA_RESPONSE', 'tick');
+//   console.log('tick');
+// }, 1000);

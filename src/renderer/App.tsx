@@ -12,6 +12,7 @@ import AnalyticsTab from './tabs/analytics';
 import store from './store/store';
 
 import CustomTitlebar from './components/navigation/CustomTitlebar';
+import DialogProvider from './components/providers/DialogProviders';
 
 export default function App() {
   const [currentTab, setCurrentTab] = React.useState('data');
@@ -22,44 +23,46 @@ export default function App() {
         <div id="title" style={{ zIndex: 2000, height: 28 }}>
           <CustomTitlebar />
         </div>
-        <div
-          style={{
-            flex: '1 1 100%',
-            minHeight: 0,
-            display: 'flex',
-            flexDirection: 'column',
-          }}
-          id="root"
-        >
-          <TabContext value={currentTab}>
-            <Box sx={{ borderBottom: 1, borderColor: 'divider' }}>
-              <TabList
-                onChange={(_event, newValue) => {
-                  setCurrentTab(newValue);
+        <DialogProvider>
+          <div
+            style={{
+              flex: '1 1 100%',
+              minHeight: 0,
+              display: 'flex',
+              flexDirection: 'column',
+            }}
+            id="root"
+          >
+            <TabContext value={currentTab}>
+              <Box sx={{ borderBottom: 1, borderColor: 'divider' }}>
+                <TabList
+                  onChange={(_event, newValue) => {
+                    setCurrentTab(newValue);
+                  }}
+                  centered
+                >
+                  <Tab label="Data" value="data" style={{ padding: 0 }} />
+                  <Tab label="Analytics" value="analytics" />
+                </TabList>
+              </Box>
+              <TabPanel
+                value="data"
+                style={{
+                  padding: 0,
+                  height: '100%',
+                  display: 'flex',
+                  flexDirection: 'column',
+                  overflowY: 'auto',
                 }}
-                centered
               >
-                <Tab label="Data" value="data" style={{ padding: 0 }} />
-                <Tab label="Analytics" value="analytics" />
-              </TabList>
-            </Box>
-            <TabPanel
-              value="data"
-              style={{
-                padding: 0,
-                height: '100%',
-                display: 'flex',
-                flexDirection: 'column',
-                overflowY: 'auto',
-              }}
-            >
-              <DataTab />
-            </TabPanel>
-            <TabPanel value="analytics">
-              <AnalyticsTab />
-            </TabPanel>
-          </TabContext>
-        </div>
+                <DataTab />
+              </TabPanel>
+              <TabPanel value="analytics">
+                <AnalyticsTab />
+              </TabPanel>
+            </TabContext>
+          </div>
+        </DialogProvider>
       </Provider>
     </StylesProvider>
   );

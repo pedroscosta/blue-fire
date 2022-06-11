@@ -30,6 +30,7 @@ contextBridge.exposeInMainWorld('electron', {
 });
 
 contextBridge.exposeInMainWorld('bfCore', {
+  // Menu functions
   saveFileAs: async (stored) => {
     return ipcRenderer.invoke('BF_CORE_SAVE_FILE_AS', stored);
   },
@@ -38,4 +39,10 @@ contextBridge.exposeInMainWorld('bfCore', {
   },
   openFile: () => ipcRenderer.invoke('BF_CORE_OPEN_FILE'),
   appData: () => ipcRenderer.invoke('BF_CORE_GET_APP_DATA'),
+  // Load data
+  reloadDataSources: (stored) => {
+    ipcRenderer.invoke('BF_CORE_RELOAD_DATA_SOURCES', stored);
+  },
+  handleLoadDataResponse: (callback) =>
+    ipcRenderer.on('BF_CORE_LOAD_DATA_RESPONSE', callback),
 });
