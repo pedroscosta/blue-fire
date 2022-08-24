@@ -49,15 +49,24 @@ export default function App() {
                 value="data"
                 style={{
                   padding: 0,
-                  height: '100%',
                   display: 'flex',
+                  flex: '1 1 auto',
                   flexDirection: 'column',
                   overflowY: 'auto',
                 }}
               >
                 <DataTab />
               </TabPanel>
-              <TabPanel value="analytics">
+              <TabPanel
+                value="analytics"
+                style={{
+                  padding: 0,
+                  display: 'flex',
+                  flexDirection: 'row',
+                  flex: '1 1 auto',
+                  overflowY: 'auto',
+                }}
+              >
                 <AnalyticsTab />
               </TabPanel>
             </TabContext>
