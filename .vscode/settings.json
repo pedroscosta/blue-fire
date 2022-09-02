@@ -23,6 +23,7 @@
   },
   "conventionalCommits.scopes": [
     "analytics",
-    "core"
+    "core",
+    "modules"
   ]
 }

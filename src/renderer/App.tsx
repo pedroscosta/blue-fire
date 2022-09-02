@@ -14,6 +14,8 @@ import store from './store/store';
 import CustomTitlebar from './components/navigation/CustomTitlebar';
 import DialogProvider from './components/providers/DialogProviders';
 
+bfCore.loadModules();
+
 export default function App() {
   const [currentTab, setCurrentTab] = React.useState('data');
 

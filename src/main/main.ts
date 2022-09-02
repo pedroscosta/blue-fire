@@ -21,6 +21,7 @@ import { getAppVersion, saveStoreContents } from './utils/app';
 import { readXLSX } from './utils/dataSources';
 
 const fs = require('fs').promises;
+const fsSync = require('fs');
 
 export default class AppUpdater {
   constructor() {
@@ -250,7 +251,11 @@ ipcMain.handle('BF_CORE_RELOAD_DATA_SOURCES', async (_event, dataModel) => {
   });
 });
 
-// setInterval(() => {
-//   mainWindow?.webContents.send('BF_CORE_LOAD_DATA_RESPONSE', 'tick');
-//   console.log('tick');
-// }, 1000);
+/* ===================================================================================================================
+      Loading modules
+ =================================================================================================================== */
+
+ipcMain.handle('BF:LOAD_MODULES', () => {
+  const files = fsSync.readdirSync(path.join(__dirname, 'modules'));
+  console.log(files);
+});
