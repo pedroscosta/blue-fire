@@ -83,7 +83,10 @@ const createWindow = async () => {
     height: 728,
     icon: getAssetPath('icon.png'),
     webPreferences: {
-      preload: path.join(__dirname, 'preload.js'),
+      contextIsolation: true, // add this
+      preload: app.isPackaged
+        ? path.join(__dirname, 'preload.js')
+        : path.join(__dirname, '../../.erb/dll/preload.js'),
     },
     // Remove the window frame from windows applications
     frame: false,

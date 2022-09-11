@@ -4,7 +4,7 @@ import { useDrag } from 'react-dnd';
 
 const DraggableItem = ({ content, type }) => {
   const [{ isDragging }, dragRef] = useDrag({
-    item: { type },
+    type,
     collect: (monitor) => ({
       isDragging: monitor.isDragging(),
     }),

@@ -1,7 +1,6 @@
-import { render } from 'react-dom';
-import { Provider } from 'react-redux';
+import { createRoot } from 'react-dom/client';
 import App from './App';
-import CustomTitlebar from './components/navigation/CustomTitlebar';
-import store from './store/store';
 
-render(<App />, document.getElementById('app'));
+const container = document.getElementById('app')!;
+const root = createRoot(container);
+root.render(<App />);

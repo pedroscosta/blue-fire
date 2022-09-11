@@ -1,4 +1,4 @@
-const { ipcRenderer } = require('electron');
+import { contextBridge, ipcRenderer, IpcRendererEvent } from 'electron';
 
 const bfCore = {
   saveFileAs: async (stored: unknown) => {
@@ -13,8 +13,9 @@ const bfCore = {
   reloadDataSources: (stored: unknown) => {
     ipcRenderer.invoke('BF_CORE_RELOAD_DATA_SOURCES', stored);
   },
-  handleLoadDataResponse: (callback: (...args: unknown[]) => void) =>
-    ipcRenderer.on('BF_CORE_LOAD_DATA_RESPONSE', callback),
+  handleLoadDataResponse: (
+    callback: (event: IpcRendererEvent, ...args: unknown[]) => void
+  ) => ipcRenderer.on('BF_CORE_LOAD_DATA_RESPONSE', callback),
   // Load modules
   loadModules: () => {
     ipcRenderer.invoke('BF:LOAD_MODULES');
@@ -22,3 +23,12 @@ const bfCore = {
 };
 
 export default bfCore;
+
+contextBridge.exposeInMainWorld('bfCore', bfCore);
+
+contextBridge.exposeInMainWorld('electron', {
+  closeWindow: () => ipcRenderer.send('closeWindow'),
+  minimizeWindow: () => ipcRenderer.send('minimizeWindow'),
+  maximizeWindow: () => ipcRenderer.send('maximizeWindow'),
+  isWindowMaximized: () => ipcRenderer.invoke('isWindowMaximized'),
+});

@@ -1,17 +1,18 @@
 {
-  "name": "electron-react-boilerplate",
-  "version": "4.5.0",
-  "description": "A foundation for scalable desktop apps",
-  "main": "./dist/main/main.js",
+  "name": "blue-fire",
+  "version": "0.1.0",
+  "description": "Data Drive Everything",
+  "license": "GNU-GPLv3",
   "author": {
-    "name": "Electron React Boilerplate Maintainers",
-    "email": "electronreactboilerplate@gmail.com",
-    "url": "https://github.com/electron-react-boilerplate"
+    "name": "Pedro Costa",
+    "email": "scosta.pedro.manoel@gmail.com",
+    "url": "https://github.com/pedroscosta/"
   },
+  "main": "./dist/main/main.js",
   "scripts": {
     "electron-rebuild": "node -r ts-node/register ../../.erb/scripts/electron-rebuild.js",
-    "link-modules": "node -r ts-node/register ../../.erb/scripts/link-modules.ts",
-    "postinstall": "npm run electron-rebuild && npm run link-modules"
+    "postinstall": "npm run electron-rebuild && npm run link-modules",
+    "link-modules": "node -r ts-node/register ../../.erb/scripts/link-modules.ts"
   },
-  "license": "MIT"
+  "dependencies": {}
 }
