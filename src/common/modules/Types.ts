@@ -1,4 +1,3 @@
-import { ReactFragment } from 'react';
 import PropTypes from './PropTypes';
 
 export interface IProps {
@@ -21,7 +20,7 @@ export interface IChartModule {
   id: string;
   name: string;
   props: IProps[];
-  render({ props }: IChartRenderProps): ReactFragment;
+  render({ props }: IChartRenderProps): React.ReactNode;
 }
 
 export interface IModule {

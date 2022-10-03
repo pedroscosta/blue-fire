@@ -11,6 +11,7 @@ const INITIAL_STATE = {
   dataModel: { tables: {}, connections: {} },
   loadedData: { tables: {} },
   projectData: {},
+  charts: {},
 };
 
 const actions = {};

@@ -29,6 +29,7 @@
     "*.{css,sass,scss}.d.ts": true
   },
   "conventionalCommits.scopes": [
-    "electron"
+    "electron",
+    "modules"
   ]
 }

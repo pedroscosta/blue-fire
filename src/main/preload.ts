@@ -17,9 +17,7 @@ const bfCore = {
     callback: (event: IpcRendererEvent, ...args: unknown[]) => void
   ) => ipcRenderer.on('BF_CORE_LOAD_DATA_RESPONSE', callback),
   // Load modules
-  loadModules: () => {
-    ipcRenderer.invoke('BF:LOAD_MODULES');
-  },
+  loadModules: (dir: string) => ipcRenderer.invoke('BF:LOAD_MODULES', dir),
 };
 
 export default bfCore;

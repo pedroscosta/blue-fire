@@ -12,10 +12,10 @@
  * When running `npm run build` or `npm run build:main`, this file is compiled to
  * `./src/main.js` using webpack. This gives us some performance wins.
  */
-import path from 'path';
-import { app, BrowserWindow, shell, ipcMain, dialog } from 'electron';
-import { autoUpdater } from 'electron-updater';
+import { app, BrowserWindow, dialog, ipcMain, shell } from 'electron';
 import log from 'electron-log';
+import { autoUpdater } from 'electron-updater';
+import path from 'path';
 import { resolveHtmlPath } from './util';
 import { getAppVersion, saveStoreContents } from './utils/app';
 import { readXLSX } from './utils/dataSources';
@@ -258,7 +258,7 @@ ipcMain.handle('BF_CORE_RELOAD_DATA_SOURCES', async (_event, dataModel) => {
       Loading modules
  =================================================================================================================== */
 
-ipcMain.handle('BF:LOAD_MODULES', () => {
-  const files = fsSync.readdirSync(path.join(__dirname, 'modules'));
-  console.log(files);
-});
+ipcMain.handle('BF:LOAD_MODULES', (_event: Event, dir: string) => {
+  const files = fsSync.readdirSync(path.join(__dirname, dir));
+  return files.map((file: string) => path.join(__dirname, dir, file));
+}); // a
