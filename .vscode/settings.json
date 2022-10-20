@@ -30,6 +30,13 @@
   },
   "conventionalCommits.scopes": [
     "electron",
-    "modules"
+    "extensions",
+    "API",
+    "UI",
+    "components",
+    "data editor",
+    "sheet editor",
+    "store",
+    "settings"
   ]
 }

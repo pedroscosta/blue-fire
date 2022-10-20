@@ -16,8 +16,10 @@ const bfCore = {
   handleLoadDataResponse: (
     callback: (event: IpcRendererEvent, ...args: unknown[]) => void
   ) => ipcRenderer.on('BF_CORE_LOAD_DATA_RESPONSE', callback),
-  // Load modules
-  loadModules: (dir: string) => ipcRenderer.invoke('BF:LOAD_MODULES', dir),
+  // Extensions
+  discoverModules: (dir: string) =>
+    ipcRenderer.invoke('BF:DISCOVER_MODULES', dir), //TODO: Remove this
+  getActiveExtensions: () => ipcRenderer.invoke('bf:extensions:getActive'),
 };
 
 export default bfCore;

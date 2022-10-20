@@ -6,56 +6,21 @@ import TabList from '@mui/lab/TabList';
 import TabPanel from '@mui/lab/TabPanel';
 import Box from '@mui/material/Box';
 import Tab from '@mui/material/Tab';
-import React, { useEffect } from 'react';
+import * as bluefire from 'bluefire';
+import React from 'react';
 import { Provider } from 'react-redux';
 import './App.css';
 import store from './store/store';
-import AnalyticsTab from './tabs/analytics';
-import DataTab from './tabs/data';
+// import AnalyticsTab from './tabs/analytics';
+// import DataTab from './tabs/data';
 
 import CustomTitlebar from './components/navigation/CustomTitlebar';
 import DialogProvider from './components/providers/DialogProviders';
 
+bluefire.extensions.loadExtensions();
+
 export default function App() {
   const [currentTab, setCurrentTab] = React.useState('data');
-
-  // eslint-disable-next-line promise/catch-or-return, promise/always-return
-
-  // .then((files) => {
-  //   files.forEach((file: string) => {
-  //     // eslint-disable-next-line promise/catch-or-return, promise/no-nesting, promise/always-return
-  //     import(`../modules/${file}`).then((obj) => {
-  //       console.log(obj);
-  //     });
-  //   });
-  // });
-
-  useEffect(() => {
-    const modulesFolder = '../modules';
-    const fetchModules = async () => {
-      const modulesNames = await bfCore.loadModules(modulesFolder);
-
-      // const loadModules = (files: string[]) =>
-      //   Promise.all(files.map((file) => import(`${modulesFolder}/${file}`)));
-
-      // loadModules(modules)
-      //   .then((files) => console.log(files))
-      //   .catch(console.error);
-
-      // const modules: {
-      //   [index: string]: any;
-      // } = {};
-      console.log(modulesNames);
-      modulesNames.forEach(async (file: string) => {
-        // const filePath = `${modulesFolder}/${file}`;
-        // const obj = await import(`${modulesFolder}/${module}`);
-        console.log(require(file.split('\\').join('/')));
-        // modules[module] = obj;
-      });
-    };
-
-    fetchModules();
-  }, []);
 
   return (
     <StylesProvider injectFirst>
@@ -95,7 +60,7 @@ export default function App() {
                   overflowY: 'auto',
                 }}
               >
-                <DataTab />
+                {/* <DataTab /> */}
               </TabPanel>
               <TabPanel
                 value="analytics"
@@ -107,7 +72,7 @@ export default function App() {
                   overflowY: 'auto',
                 }}
               >
-                <AnalyticsTab />
+                {/* <AnalyticsTab /> */}
               </TabPanel>
             </TabContext>
           </div>

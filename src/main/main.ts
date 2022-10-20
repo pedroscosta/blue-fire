@@ -16,12 +16,26 @@ import { app, BrowserWindow, dialog, ipcMain, shell } from 'electron';
 import log from 'electron-log';
 import { autoUpdater } from 'electron-updater';
 import path from 'path';
+import ExtensionStore from './extensions/ExtensionStore';
 import { resolveHtmlPath } from './util';
 import { getAppVersion, saveStoreContents } from './utils/app';
 import { readXLSX } from './utils/dataSources';
 
 const fs = require('fs').promises;
 const fsSync = require('fs');
+
+/* ===================================================================================================================
+      Setting userData
+ =================================================================================================================== */
+
+const userDataPath = path.join(app.getPath('home'), '.bluefire');
+// TODO: Save this to a settings context
+
+if (!fsSync.existsSync(userDataPath)) {
+  fsSync.mkdirSync(userDataPath);
+}
+
+// app.setPath('userData', path.join(app.getPath('home'), 'bluefire'));
 
 export default class AppUpdater {
   constructor() {
@@ -137,6 +151,14 @@ app.on('window-all-closed', () => {
 app
   .whenReady()
   .then(() => {
+    /* ===================================================================================================================
+      Extensions store
+ =================================================================================================================== */
+
+    const extensionStore = new ExtensionStore();
+
+    extensionStore.loadExtensions(path.join(userDataPath, 'extensions'));
+
     createWindow();
     app.on('activate', () => {
       // On macOS it's common to re-create a window in the app when the
@@ -258,7 +280,7 @@ ipcMain.handle('BF_CORE_RELOAD_DATA_SOURCES', async (_event, dataModel) => {
       Loading modules
  =================================================================================================================== */
 
-ipcMain.handle('BF:LOAD_MODULES', (_event: Event, dir: string) => {
+ipcMain.handle('BF:DISCOVER_MODULES', (_event: Event, dir: string) => {
   const files = fsSync.readdirSync(path.join(__dirname, dir));
-  return files.map((file: string) => path.join(__dirname, dir, file));
-}); // a
+  return files.map((file: string) => file.split('\\').join('/')); // path.join(__dirname, dir, file)
+}); //

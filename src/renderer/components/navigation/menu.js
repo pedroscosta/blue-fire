@@ -1,7 +1,7 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 /* eslint-disable import/prefer-default-export */
-import { emitCustomEvent } from 'react-custom-events';
 import { useEffect, useState } from 'react';
+import { emitCustomEvent } from 'react-custom-events';
 import store from '../../store/store';
 
 const doClick = (queueSnack) => (item, currentWindow, e) => {
