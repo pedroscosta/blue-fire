@@ -37,6 +37,7 @@
     "data editor",
     "sheet editor",
     "store",
-    "settings"
+    "settings",
+    "workspace"
   ]
 }

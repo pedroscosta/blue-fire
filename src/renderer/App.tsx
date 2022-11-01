@@ -1,13 +1,7 @@
-/* eslint-disable global-require */
-/* eslint-disable import/no-dynamic-require */
-import { StylesProvider } from '@material-ui/core/styles';
-import TabContext from '@mui/lab/TabContext';
-import TabList from '@mui/lab/TabList';
-import TabPanel from '@mui/lab/TabPanel';
-import Box from '@mui/material/Box';
-import Tab from '@mui/material/Tab';
+import { ChakraProvider } from '@chakra-ui/react';
 import * as bluefire from 'bluefire';
-import React from 'react';
+import { DndProvider } from 'react-dnd';
+import { HTML5Backend } from 'react-dnd-html5-backend';
 import { Provider } from 'react-redux';
 import './App.css';
 import store from './store/store';
@@ -15,20 +9,19 @@ import store from './store/store';
 // import DataTab from './tabs/data';
 
 import CustomTitlebar from './components/navigation/CustomTitlebar';
-import DialogProvider from './components/providers/DialogProviders';
+import MovableTabs from './components/navigation/MovableTabs';
+import Theme from './Theme';
 
 bluefire.extensions.loadExtensions();
 
 export default function App() {
-  const [currentTab, setCurrentTab] = React.useState('data');
-
   return (
-    <StylesProvider injectFirst>
+    <ChakraProvider theme={Theme}>
       <Provider store={store}>
-        <div id="title" style={{ zIndex: 2000, height: 28 }}>
-          <CustomTitlebar />
-        </div>
-        <DialogProvider>
+        <DndProvider backend={HTML5Backend}>
+          <div id="title" style={{ zIndex: 2000, height: 28 }}>
+            <CustomTitlebar />
+          </div>
           <div
             style={{
               flex: '1 1 100%',
@@ -38,7 +31,8 @@ export default function App() {
             }}
             id="root"
           >
-            <TabContext value={currentTab}>
+            <MovableTabs />
+            {/* <TabContext value={currentTab}>
               <Box sx={{ borderBottom: 1, borderColor: 'divider' }}>
                 <TabList
                   onChange={(_event, newValue) => {
@@ -60,7 +54,6 @@ export default function App() {
                   overflowY: 'auto',
                 }}
               >
-                {/* <DataTab /> */}
               </TabPanel>
               <TabPanel
                 value="analytics"
@@ -72,12 +65,11 @@ export default function App() {
                   overflowY: 'auto',
                 }}
               >
-                {/* <AnalyticsTab /> */}
               </TabPanel>
-            </TabContext>
+            </TabContext> */}
           </div>
-        </DialogProvider>
+        </DndProvider>
       </Provider>
-    </StylesProvider>
+    </ChakraProvider>
   );
 }
