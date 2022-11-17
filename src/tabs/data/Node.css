@@ -1,0 +1,28 @@
+.table-node-root {
+  min-width: 15rem;
+  display: flex;
+  flex-direction: column;
+  border-radius: 0.75rem;
+  background-color: #1a202c;
+  color: #fff;
+  border: 1px solid RGBA(255, 255, 255, 0.64);
+  text-align: center;
+  overflow: hidden;
+}
+
+.table-node-header {
+  background-color: #2d3748;
+  display: flex;
+  height: 2rem;
+  justify-content: center;
+  align-items: center;
+  border-bottom: 1px solid RGBA(255, 255, 255, 0.64);
+}
+
+.table-node-item {
+  display: flex;
+  height: 1.5rem;
+  justify-content: center;
+  align-items: center;
+  border-bottom: 1px solid RGBA(255, 255, 255, 0.64);
+}

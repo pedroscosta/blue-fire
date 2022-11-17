@@ -1,4 +1,5 @@
 import { extendTheme, StyleConfig, ThemeConfig } from '@chakra-ui/react';
+import { Styles } from '@chakra-ui/theme-tools';
 
 const config: ThemeConfig = {
   initialColorMode: 'dark',
@@ -80,6 +81,15 @@ const components: Record<string, StyleConfig> = {
   },
 };
 
-const Theme = extendTheme({ config, semanticTokens, components });
+const styles: Styles = {
+  global: (props) => ({
+    '.butterflies-link': {
+      stroke: props.colorMode === 'dark' ? 'whiteAlpha.300' : 'gray.200',
+      strokeWidth: '2px',
+    },
+  }),
+};
+
+const Theme = extendTheme({ config, semanticTokens, components, styles });
 
 export default Theme;

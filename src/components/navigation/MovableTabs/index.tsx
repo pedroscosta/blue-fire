@@ -1,4 +1,5 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
+import DataTab from '@/tabs/data';
 import {
   Box,
   Divider,
@@ -15,7 +16,7 @@ import { useState } from 'react';
 import { BsPlusLg } from 'react-icons/bs';
 import Tab from './Tab';
 
-const DataTab = ({ id }: { id: string }) => <h1>{id}</h1>;
+// const DataTab = ({ id }: { id: string }) => <h1>{id}</h1>;
 const SheetTab = ({ id }: { id: string }) => <h1>{id}</h1>;
 
 const nid = nanoid();
