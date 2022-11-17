@@ -1,33 +1,27 @@
 {
   "compilerOptions": {
-    "incremental": true,
+		"baseUrl": ".",
     "target": "ESNext",
-    "module": "CommonJS",
-    "lib": ["dom", "es2021"],
-    "declaration": true,
-    "declarationMap": true,
-    "jsx": "react-jsx",
-    "strict": true,
-    "pretty": true,
-    "sourceMap": true,
-    "baseUrl": "./src",
-    "noUnusedLocals": true,
-    "noUnusedParameters": true,
-    "noImplicitReturns": true,
-    "noFallthroughCasesInSwitch": true,
-    "moduleResolution": "node",
-    "esModuleInterop": true,
+    "useDefineForClassFields": true,
+    "lib": ["DOM", "DOM.Iterable", "ESNext"],
+		"paths": {
+			"@/*": ["src/*"],
+      "styles/*": ["src/assets/styles/*"]
+		},
+    "allowJs": false,
+    "skipLibCheck": true,
+    "esModuleInterop": false,
     "allowSyntheticDefaultImports": true,
+    "strict": true,
+    "forceConsistentCasingInFileNames": true,
+    "module": "ESNext",
+    "moduleResolution": "Node",
     "resolveJsonModule": true,
-    "allowJs": true,
-    "outDir": "release/app/dist",
-    "types": [
-      "node",
-      "webpack-env" // here
-    ],
-    "paths": {
-      "*": ["node_modules/*", "./global/*"]
-    }
+    "isolatedModules": true,
+    "noEmit": true,
+    "jsx": "react-jsx"
   },
-  "exclude": ["test", "release/build", "release/app/dist", ".erb/dll"]
+  "include": ["src"],
+  "references": [{ "path": "./tsconfig.node.json" }]
 }
+

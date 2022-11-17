@@ -1,3 +1,10 @@
 {
-  "recommendations": ["dbaeumer.vscode-eslint", "EditorConfig.EditorConfig"]
+  // See http://go.microsoft.com/fwlink/?LinkId=827846
+  // for the documentation about the extensions.json format
+  "recommendations": [
+    "editorconfig.editorconfig",
+    "mrmlnc.vscode-json5",
+    "rbbit.typescript-hero",
+    "syler.sass-indented",
+  ]
 }
