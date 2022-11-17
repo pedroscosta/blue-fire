@@ -29,7 +29,11 @@
     "node": "^14.18.0 || >=16.0.0"
   },
   "dependencies": {
-    "frameless-titlebar": "^2.1.4"
+    "@chakra-ui/react": "^2.4.1",
+    "@emotion/react": "^11.10.5",
+    "@emotion/styled": "^11.10.5",
+    "frameless-titlebar": "^2.1.4",
+    "framer-motion": "^7.6.7"
   },
   "devDependencies": {
     "@types/react": "^18.0.21",

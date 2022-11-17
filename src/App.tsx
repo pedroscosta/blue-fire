@@ -1,22 +1,16 @@
+import { ChakraProvider } from '@chakra-ui/react';
 import './App.css';
 import CustomTitlebar from './components/navigation/CustomTitlebar';
+import Theme from './Theme';
 
 const App: React.FC = () => {
   return (
-    <>
-      <div id="title" style={{zIndex: 2000, height: 28}}>
+    <ChakraProvider theme={Theme}>
+      <div id="title" style={{ zIndex: 2000, height: 28 }}>
         <CustomTitlebar />
       </div>
-      <div
-        style={{
-          flex: '1 1 100%',
-          minHeight: 0,
-          display: 'flex',
-          flexDirection: 'column',
-        }}
-        id="root"
-      ></div>
-    </>
+      <div id="root"></div>
+    </ChakraProvider>
   );
 };
 
