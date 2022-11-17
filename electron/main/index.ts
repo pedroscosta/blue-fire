@@ -14,7 +14,7 @@ process.env.PUBLIC = app.isPackaged
   ? process.env.DIST
   : join(process.env.DIST_ELECTRON, '../public');
 
-import {app, BrowserWindow, shell, ipcMain} from 'electron';
+import {app, BrowserWindow, ipcMain, shell} from 'electron';
 import {release} from 'os';
 import {join} from 'path';
 
@@ -42,12 +42,16 @@ const indexHtml = join(process.env.DIST, 'index.html');
 async function createWindow() {
   win = new BrowserWindow({
     title: 'Blue Fire',
-    icon: join(process.env.PUBLIC, 'favicon.svg'),
+    icon: join(process.env.PUBLIC, 'icon.png'),
     webPreferences: {
       preload,
       nodeIntegration: false,
       contextIsolation: true,
     },
+    // Remove the window frame from windows applications
+    frame: false,
+    // Hide the titlebar from MacOS applications while keeping the stop lights
+    titleBarStyle: 'hidden',
   });
 
   if (process.env.VITE_DEV_SERVER_URL) {
@@ -93,4 +97,28 @@ app.on('activate', () => {
   } else {
     createWindow();
   }
+});
+
+/* ===================================================================================================================
+      Title bar
+ =================================================================================================================== */
+
+ipcMain.on('closeWindow', () => {
+  win?.close();
+});
+
+ipcMain.on('minimizeWindow', () => {
+  win?.minimize();
+});
+
+ipcMain.on('maximizeWindow', () => {
+  if (win?.isMaximized()) {
+    win?.restore();
+  } else {
+    win?.maximize();
+  }
+});
+
+ipcMain.handle('isWindowMaximized', () => {
+  return win?.isMaximized();
 });

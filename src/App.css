@@ -1,0 +1,39 @@
+/*
+ * @NOTE: Prepend a `~` to css file paths that are in your node_modules
+ *        See https://github.com/webpack-contrib/sass-loader#imports
+ */
+html,
+body {
+  height: 100vh;
+  margin: 0px;
+}
+body {
+  display: flex;
+  align-items: stretch;
+  flex-direction: column;
+}
+
+#root {
+  width: 100%;
+  display: flex;
+  flex: 1 1 100%;
+  min-height: 0;
+  flex-direction: column;
+}
+
+#app {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+}
+
+.title {
+  z-index: 2000;
+  height: 28px;
+  display: flex;
+  flex: 1 1 100%;
+}
+
+[hidden] {
+  display: none !important;
+}

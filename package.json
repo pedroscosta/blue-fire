@@ -28,7 +28,9 @@
   "engines": {
     "node": "^14.18.0 || >=16.0.0"
   },
-  "dependencies": {},
+  "dependencies": {
+    "frameless-titlebar": "^2.1.4"
+  },
   "devDependencies": {
     "@types/react": "^18.0.21",
     "@types/react-dom": "^18.0.6",
