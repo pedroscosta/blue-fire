@@ -32,8 +32,12 @@
     "@chakra-ui/react": "^2.4.1",
     "@emotion/react": "^11.10.5",
     "@emotion/styled": "^11.10.5",
+    "chakra-ui-contextmenu": "^1.0.5",
     "frameless-titlebar": "^2.1.4",
-    "framer-motion": "^7.6.7"
+    "framer-motion": "^7.6.7",
+    "react-dnd": "^16.0.1",
+    "react-dnd-html5-backend": "^16.0.1",
+    "react-icons": "^4.6.0"
   },
   "devDependencies": {
     "@types/react": "^18.0.21",
