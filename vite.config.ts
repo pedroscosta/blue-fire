@@ -39,9 +39,6 @@ export default defineConfig({
         loadViteEnv(),
       ],
     }),
-    renderer({
-      nodeIntegration: true,
-    }),
   ],
   server: process.env.VSCODE_DEBUG
     ? (() => {
