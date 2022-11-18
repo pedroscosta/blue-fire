@@ -58,6 +58,7 @@
     "prettier": "^2.7.1",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
+    "react-dropzone": "^14.2.3",
     "sass": "^1.55.0",
     "typescript": "^4.8.4",
     "vite": "^3.2.2",

@@ -25,21 +25,36 @@ const semanticTokens = {
 };
 
 const components: Record<string, StyleConfig> = {
-  CustomBadge: {
+  Overlay: {
     baseStyle: ({ colorMode }) => ({
-      bg: colorMode === 'dark' ? 'green.300' : 'green.500',
-      color: colorMode === 'dark' ? 'gray.800' : 'white',
+      position: 'absolute',
+      top: '0px',
+      bottom: '0px',
+      left: '0px',
+      right: '0px',
+      display: 'flex',
+      flexDirection: 'column',
+      bg: colorMode === 'dark' ? 'whiteAlpha.300' : 'blackAlpha.300',
+      color: colorMode === 'dark' ? 'whiteAlpha.900' : 'gray.700',
       textTransform: 'uppercase',
       fontWeight: 'semibold',
       letterSpacing: '0.02em',
       padding: '4px',
-      borderRadius: '2px',
-      fontSize: '12px',
+      fontSize: '2.5rem',
+      justifyContent: 'center',
+      alignItems: 'center',
+      outlineStyle: 'dashed',
+      outlineWidth: '0.3rem',
+      outlineOffset: '-1.5rem',
+      outlineColor: colorMode === 'dark' ? 'whiteAlpha.400' : 'gray.300',
+      zIndex: 1000,
     }),
     variants: {
-      custom: ({ colorMode }) => ({
+      success: ({ colorMode }) => ({
         bg: colorMode === 'dark' ? 'blue.200' : 'blue.500',
+        color: colorMode === 'dark' ? 'blue.200' : 'blue.500',
         padding: '8px',
+        outlineColor: colorMode === 'dark' ? 'rgba(154, 230, 180, 0.16)' : 'green.100',
       }),
     },
   },

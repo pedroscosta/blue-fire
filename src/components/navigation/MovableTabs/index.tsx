@@ -12,7 +12,7 @@ import {
   useStyleConfig,
 } from '@chakra-ui/react';
 import { nanoid } from 'nanoid';
-import { useState } from 'react';
+import { ElementType, useState } from 'react';
 import { BsPlusLg } from 'react-icons/bs';
 import Tab from './Tab';
 
@@ -25,8 +25,8 @@ const nid3 = nanoid();
 
 const mockTabs = {
   tabTypes: {
-    'bf:data-tab': { name: 'Data', as: DataTab },
-    'bf:sheet-tab': { name: 'Sheet', as: SheetTab },
+    'bf:data-tab': { name: 'Data', as: DataTab as ElementType },
+    'bf:sheet-tab': { name: 'Sheet', as: SheetTab as ElementType },
   },
   fixedTabs: ['bf:data-tab'],
   openableTabs: ['bf:sheet-tab'],
@@ -62,6 +62,8 @@ const MovableTabs = () => {
       return { ...prev };
     });
   };
+
+  const TabType = tabs.tabTypes[tabs.tabs[curTab].type as keyof typeof tabs.tabTypes].as;
 
   return (
     <>
@@ -107,9 +109,10 @@ const MovableTabs = () => {
           </MenuList>
         </Menu>
       </Box>
-      {tabs.tabTypes[tabs.tabs[curTab].type as keyof typeof tabs.tabTypes].as({
+      {/* {tabs.tabTypes[tabs.tabs[curTab].type as keyof typeof tabs.tabTypes].as({
         id: curTab,
-      })}
+      })} */}
+      {<TabType id={curTab} />}
     </>
   );
 };
