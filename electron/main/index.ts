@@ -14,9 +14,9 @@ process.env.PUBLIC = app.isPackaged
   ? process.env.DIST
   : join(process.env.DIST_ELECTRON, '../public');
 
-import {app, BrowserWindow, ipcMain, shell} from 'electron';
-import {release} from 'os';
-import {join} from 'path';
+import { app, BrowserWindow, ipcMain, shell } from 'electron';
+import { release } from 'os';
+import { join } from 'path';
 
 // Disable GPU Acceleration for Windows 7
 if (release().startsWith('6.1')) app.disableHardwareAcceleration();
@@ -29,6 +29,19 @@ if (!app.requestSingleInstanceLock()) {
   process.exit(0);
 }
 
+const installExtensions = async () => {
+  const installer: any = (await import('electron-devtools-installer')).default;
+  const forceDownload = !!process.env.UPGRADE_EXTENSIONS;
+  const extensions = ['REACT_DEVELOPER_TOOLS', 'REDUX_DEVTOOLS'];
+
+  return installer
+    .default(
+      extensions.map((name) => installer[name]),
+      forceDownload,
+    )
+    .catch(console.log);
+};
+
 /* ===================================================================================================================
         Setting main window
   =================================================================================================================== */
@@ -40,6 +53,10 @@ const url = process.env.VITE_DEV_SERVER_URL;
 const indexHtml = join(process.env.DIST, 'index.html');
 
 async function createWindow() {
+  if (!app.isPackaged) {
+    await installExtensions();
+  }
+
   win = new BrowserWindow({
     title: 'Blue Fire',
     icon: join(process.env.PUBLIC, 'icon.png'),
@@ -69,9 +86,9 @@ async function createWindow() {
   });
 
   // Make all links open with the browser, not with the application
-  win.webContents.setWindowOpenHandler(({url}) => {
+  win.webContents.setWindowOpenHandler(({ url }) => {
     if (url.startsWith('https:')) shell.openExternal(url);
-    return {action: 'deny'};
+    return { action: 'deny' };
   });
 }
 

@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import DataTab from '@/tabs/data';
+import { useStore } from '@/store';
 import {
   Box,
   Divider,
@@ -11,37 +11,17 @@ import {
   SystemStyleObject,
   useStyleConfig,
 } from '@chakra-ui/react';
-import { nanoid } from 'nanoid';
-import { ElementType, useState } from 'react';
+import { useState } from 'react';
 import { BsPlusLg } from 'react-icons/bs';
+import shallow from 'zustand/shallow';
 import Tab from './Tab';
 
-// const DataTab = ({ id }: { id: string }) => <h1>{id}</h1>;
-const SheetTab = ({ id }: { id: string }) => <h1>{id}</h1>;
-
-const nid = nanoid();
-const nid2 = nanoid();
-const nid3 = nanoid();
-
-const mockTabs = {
-  tabTypes: {
-    'bf:data-tab': { name: 'Data', as: DataTab as ElementType },
-    'bf:sheet-tab': { name: 'Sheet', as: SheetTab as ElementType },
-  },
-  fixedTabs: ['bf:data-tab'],
-  openableTabs: ['bf:sheet-tab'],
-  movableTabs: [nid, nid2, nid3],
-  tabs: {
-    'bf:data-tab': { name: 'Data', type: 'bf:data-tab' },
-    [nid]: { name: 'Sheet 1', type: 'bf:sheet-tab' },
-    [nid2]: { name: 'Sheet 2', type: 'bf:sheet-tab' },
-    [nid3]: { name: 'Sheet 3', type: 'bf:sheet-tab' },
-  },
-};
-
 const MovableTabs = () => {
-  const [tabs, setTabs] = useState(mockTabs);
-  const [curTab, setCurTab] = useState(Object.keys(tabs.tabs)[0]);
+  const { tabs, tabTypes, fixedTabs, movableTabs, openableTabs, moveTab } = useStore(
+    (s) => s.tabs,
+    shallow,
+  );
+  const [curTab, setCurTab] = useState(Object.keys(tabs)[0]);
 
   const styles: any = useStyleConfig('Tabs');
 
@@ -54,37 +34,28 @@ const MovableTabs = () => {
     setCurTab(index);
   };
 
-  const handleTabMove = (draggedIndex: number, targetIndex: number) => {
-    setTabs((prev) => {
-      const dragged = prev.movableTabs[draggedIndex];
-      prev.movableTabs.splice(draggedIndex, 1);
-      prev.movableTabs.splice(targetIndex, 0, dragged);
-      return { ...prev };
-    });
-  };
-
-  const TabType = tabs.tabTypes[tabs.tabs[curTab].type as keyof typeof tabs.tabTypes].as;
+  const TabType = tabTypes[tabs[curTab].type as keyof typeof tabTypes].as;
 
   return (
     <>
       <Box __css={tablistStyles} alignItems="center">
-        {tabs.fixedTabs.map((id) => (
+        {fixedTabs.map((id) => (
           <Tab
             key={id}
             selected={id === curTab}
-            name={tabs.tabs[id].name}
+            name={tabs[id].name}
             id={id}
             tabChange={() => handleTabChange(id)}
           />
         ))}
         <Divider orientation="vertical" mr={2} ml={2} />
-        {tabs.movableTabs.map((id, index) => (
+        {movableTabs.map((id, index) => (
           <Tab
             key={id}
             selected={id === curTab}
-            name={tabs.tabs[id].name}
+            name={tabs[id]?.name || '-'}
             index={index}
-            tabMove={handleTabMove}
+            tabMove={moveTab}
             id={id}
             tabChange={() => handleTabChange(id)}
           />
@@ -101,17 +72,12 @@ const MovableTabs = () => {
             ml={2}
           />
           <MenuList>
-            {tabs.openableTabs.map((t) => (
-              <MenuItem key={t}>{`${
-                tabs.tabTypes[t as keyof typeof tabs.tabTypes].name
-              } Tab`}</MenuItem>
+            {openableTabs.map((t) => (
+              <MenuItem key={t}>{`${tabTypes[t as keyof typeof tabTypes].name} Tab`}</MenuItem>
             ))}
           </MenuList>
         </Menu>
       </Box>
-      {/* {tabs.tabTypes[tabs.tabs[curTab].type as keyof typeof tabs.tabTypes].as({
-        id: curTab,
-      })} */}
       {<TabType id={curTab} />}
     </>
   );
