@@ -45,6 +45,7 @@ const MovableTabs = () => {
             selected={id === curTab}
             name={tabs[id].name}
             id={id}
+            type="fixed-tab"
             tabChange={() => handleTabChange(id)}
           />
         ))}

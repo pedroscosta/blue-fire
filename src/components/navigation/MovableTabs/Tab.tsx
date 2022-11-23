@@ -8,6 +8,7 @@ interface TabProps {
   selected: boolean;
   name: string;
   id: string;
+  type?: string;
   index?: number | undefined;
   tabChange: () => void;
   tabMove?: (draggedIndex: number, targetIndex: number) => void | undefined;
@@ -17,6 +18,7 @@ const Tab = ({
   name,
   tabChange,
   id,
+  type,
   tabMove = undefined,
   index = undefined,
   selected = false,
@@ -26,16 +28,20 @@ const Tab = ({
 
   const [{ isDragging }, dragRef] = useDrag({
     type: 'bf:workspace-tab',
-    item: { index, id },
+    item: { index, id, type },
     collect: (monitor) => ({
       isDragging: monitor.isDragging(),
     }),
   });
 
-  const [, dropRef] = useDrop({
+  const [{ noActive }, dropRef] = useDrop({
     accept: 'bf:workspace-tab',
+    collect: (monitor) => ({
+      noActive: monitor.getItemType() === 'bf:workspace-tab',
+    }),
     hover: (item: any, monitor) => {
-      if (index === undefined || !tabMove) return;
+      if (!(index !== undefined && tabMove)) return;
+      if (item.type === 'fixed-tab') return;
 
       const draggedIndex = item.index;
 
@@ -77,6 +83,7 @@ const Tab = ({
             aria-selected={selected}
             onMouseDown={(e) => e.button === 0 && tabChange()}
             ref={contextRef}
+            sx={noActive ? { '&:active': { background: 'transparent' } } : {}}
           >
             {name}
           </Button>
