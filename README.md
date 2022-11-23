@@ -1,6 +1,6 @@
 <div align="center">
 
-# ![alt text](./assets/icons/icon-64.png "BlueFire") BlueFire 
+# <img src="./public/icons/blue-fire-512.png" alt="BlueFire" width="50"/> BlueFire
 
 BlueFire is meant to be the ultimate data analytics software, it aims to be completely customizable by user, allowing for any kind of data visualization.
 </div>
@@ -13,9 +13,6 @@ BlueFire is meant to be the ultimate data analytics software, it aims to be comp
 </div>
 
 ---
-
-
-
 
 ## Maintainers
 

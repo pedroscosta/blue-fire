@@ -1,5 +1,5 @@
 import TitleBar from 'frameless-titlebar';
-import icon from '../../../assets/icon.png';
+import icon from '../../../assets/blue-fire-512.png';
 import createMenu from './menu';
 
 const CustomTitlebar = () => {

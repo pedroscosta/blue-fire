@@ -59,7 +59,7 @@ async function createWindow() {
 
   win = new BrowserWindow({
     title: 'Blue Fire',
-    icon: join(process.env.PUBLIC, 'icon.png'),
+    icon: join(process.env.PUBLIC, 'icons', 'blue-fire-512.png'),
     webPreferences: {
       preload,
       nodeIntegration: false,
