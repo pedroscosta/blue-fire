@@ -23,11 +23,9 @@ interface State {
 }
 
 const initialState: State = {
-  dataSources: {
-    books: { location: '', columns: ['id', 'author', 'name', 'sales'] },
-  },
+  dataSources: {},
   dataModel: {
-    dag: { books: { top: 0, left: 0 } },
+    dag: {},
     connections: {},
   },
   loadedState: {

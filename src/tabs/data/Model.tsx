@@ -6,19 +6,6 @@ import shallow from 'zustand/shallow';
 import Node from './Node';
 
 const Model = () => {
-  // const [nodes, setNodes] = useState<ReactNodeData[]>([
-  //   {
-  //     id: 'books',
-  //     type: Node,
-  //     left: 50,
-  //     top: 50,
-  //     data: {
-  //       title: 'Books',
-  //       cols: ['id', 'name', 'author-id'],
-  //     },
-  //   },
-  // ]);
-
   const {
     dataSources,
     dataModel: { dag },
