@@ -3,11 +3,13 @@ import { useStore } from '@/store';
 import {
   Box,
   Divider,
+  Flex,
   IconButton,
   Menu,
   MenuButton,
   MenuItem,
   MenuList,
+  Spacer,
   SystemStyleObject,
   useStyleConfig,
 } from '@chakra-ui/react';
@@ -24,6 +26,8 @@ const MovableTabs = () => {
 
   const context = useStore((s) => s.context, shallow);
 
+  const actionButtons = useStore((s) => s.registry.query, shallow)('bf:tabs-actions', context);
+
   const [curTab, setCurTab] = useState(Object.keys(tabs)[0]);
 
   context.set('bf:current-tab-id', curTab);
@@ -32,8 +36,8 @@ const MovableTabs = () => {
   const styles: any = useStyleConfig('Tabs');
 
   const tablistStyles: SystemStyleObject = {
-    display: 'flex',
     ...styles.tablist,
+    display: 'flex',
   };
 
   const handleTabChange = (index: string) => {
@@ -86,6 +90,14 @@ const MovableTabs = () => {
             ))}
           </MenuList>
         </Menu>
+        <Spacer />
+        <Flex direction={'row'} gap={1} paddingRight={1}>
+          {Object.entries(actionButtons).map(([key, value]) => {
+            const RegisteredComponent = value;
+
+            return <RegisteredComponent key={key} />;
+          })}
+        </Flex>
       </Box>
       {<TabType id={curTab} />}
     </>

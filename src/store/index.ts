@@ -4,6 +4,7 @@ import { devtools } from 'zustand/middleware';
 import { immer } from 'zustand/middleware/immer';
 import context from './slices/context';
 import data from './slices/data';
+import registry from './slices/registry';
 import tabs from './slices/tabs';
 
 export const useStore = create(
@@ -13,6 +14,7 @@ export const useStore = create(
         tabs: tabs,
         data: data,
         context: context,
+        registry: registry,
       }),
     ),
   ),
