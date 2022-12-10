@@ -9,12 +9,8 @@ export interface ToastProps {
   indeterminate?: boolean;
 }
 
-const Toast = ({
-  content,
-  onClose,
-  extendedContent,
-  indeterminate = false,
-}: ToastProps & RenderProps) => {
+const Toast = (props: ToastProps & RenderProps) => {
+  const { content, onClose, extendedContent, indeterminate = false } = props;
   const { isOpen, onToggle } = useDisclosure();
 
   return (
