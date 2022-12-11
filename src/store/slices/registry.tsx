@@ -1,8 +1,11 @@
 import { lens } from '@dhmk/zustand-lens';
 import Context from './context';
 
+import useDataLoading from '@/hooks/logic/useDataLoading';
+import { useStore } from '@/store';
 import { Button } from '@chakra-ui/react';
 import { ElementType } from 'react';
+import shallow from 'zustand/shallow';
 
 interface ComponentRegister {
   component: ElementType;
@@ -39,11 +42,24 @@ const initialState: State = {
           key: 'bf:current-tab-type',
           value: 'bf:data-tab',
         },
-        component: () => (
-          <Button colorScheme="green" variant="outline" size="sm">
-            Load data
-          </Button>
-        ),
+        component: () => {
+          const { dataSources, loadData } = useStore((s) => s.data, shallow);
+
+          const dataLoader = useDataLoading();
+
+          return (
+            <Button
+              colorScheme="green"
+              variant="outline"
+              size="sm"
+              onClick={() => {
+                dataLoader.load(dataSources, (data) => loadData(data));
+              }}
+            >
+              Load data
+            </Button>
+          );
+        },
       },
     },
   },

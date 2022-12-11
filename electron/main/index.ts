@@ -15,8 +15,10 @@ process.env.PUBLIC = app.isPackaged
   : join(process.env.DIST_ELECTRON, '../public');
 
 import { app, BrowserWindow, ipcMain, shell } from 'electron';
+import { readFile } from 'fs/promises';
 import { release } from 'os';
 import { join } from 'path';
+import { readXLSX } from './utils/fileUtils';
 
 // Disable GPU Acceleration for Windows 7
 if (release().startsWith('6.1')) app.disableHardwareAcceleration();
@@ -138,4 +140,61 @@ ipcMain.on('maximizeWindow', () => {
 
 ipcMain.handle('isWindowMaximized', () => {
   return win?.isMaximized();
+});
+
+/* ===================================================================================================================
+      File loading
+ =================================================================================================================== */
+
+export interface DataSource {
+  location: string;
+  columns: string[];
+}
+
+let loadingData = false; // TODO: Fix this for a better solution, web workers maybe?
+
+ipcMain.on('bf:load-data', async (_e, sources: Record<string, DataSource>) => {
+  if (loadingData) return;
+
+  loadingData = true;
+  let aborted = false;
+
+  win?.webContents.send('bf:load-data', {
+    type: 'BEGIN',
+  });
+
+  for (const [file, source] of Object.entries(sources)) {
+    const { location } = source;
+
+    win?.webContents.send('bf:load-data', {
+      type: 'START_FILE',
+      payload: { file, location },
+    });
+
+    try {
+      const fileData = await readFile(location);
+
+      const [columns, data] = readXLSX(fileData);
+
+      win?.webContents.send('bf:load-data', {
+        type: 'LOADED_FILE',
+        payload: { file, location, data, columns },
+      });
+    } catch (__e) {
+      win?.webContents.send('bf:load-data', {
+        type: 'FILE_FAIL',
+        payload: { file, location },
+      });
+
+      aborted = true;
+      break;
+    }
+  }
+
+  if (!aborted) {
+    win?.webContents.send('bf:load-data', {
+      type: 'END',
+    });
+  }
+  loadingData = false;
 });

@@ -9,15 +9,18 @@ export interface DagData {
   [index: string]: { top: number; left: number };
 }
 
+export interface LoadedData {
+  fields: Record<string, string>;
+  tables: Record<string, any>; // TODO: Add a precise type for table object
+}
+
 interface State {
   dataSources: { [index: string]: DataSource };
   dataModel: {
     dag: DagData;
     connections: { [index: string]: string };
   };
-  loadedState: {
-    fields: { [index: string]: string };
-    tables: { [index: string]: any }; // TODO: Add a precise type for table object
+  loadedState: LoadedData & {
     filters: any[]; // TODO: Add a precise type for filter object
   };
 }
@@ -39,6 +42,7 @@ interface Actions {
   createDataSource: (name: string, source: DataSource) => void;
   removeDataSource: (name: string) => void;
   setDagData: (data: { [index: string]: { top: number; left: number } }) => void;
+  loadData: (data: LoadedData) => void;
 }
 
 export default lens<State & Actions>((set) => {
@@ -63,6 +67,15 @@ export default lens<State & Actions>((set) => {
         draft.dataModel.connections = Object.fromEntries(
           Object.entries(draft.dataModel.connections).filter(([k, v]) => k != name && v != name),
         );
+      });
+    },
+
+    loadData: (data: LoadedData) => {
+      set((draft) => {
+        draft.loadedState = {
+          filters: draft.loadedState.filters,
+          ...data,
+        };
       });
     },
 

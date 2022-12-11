@@ -45,8 +45,6 @@ const Toast = (props: ToastProps & RenderProps) => {
     )['--alert-fg'] as string
   ).substring(7);
 
-  console.log(status, iconColor);
-
   return (
     <Box
       color="white"
