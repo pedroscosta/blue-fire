@@ -1,17 +1,51 @@
-import { Box, Button, Flex, Icon, Progress, RenderProps, useDisclosure } from '@chakra-ui/react';
+import {
+  Box,
+  Button,
+  CircularProgress,
+  Flex,
+  Icon,
+  Progress,
+  RenderProps,
+  Text,
+  useDisclosure,
+  useMultiStyleConfig,
+} from '@chakra-ui/react';
 import { ReactNode } from 'react';
 import { IoChevronDown, IoChevronUp } from 'react-icons/io5';
-import { MdClose } from 'react-icons/md';
+import {
+  MdCheckCircleOutline,
+  MdClose,
+  MdErrorOutline,
+  MdInfoOutline,
+  MdWarningAmber,
+} from 'react-icons/md';
 
 export interface ToastProps {
   content: ReactNode | string;
   extendedContent?: ReactNode | string;
-  indeterminate?: boolean;
+  progress?: number;
 }
 
+const STATUSES = {
+  info: { icon: MdInfoOutline, colorScheme: 'blue' },
+  warning: { icon: MdWarningAmber, colorScheme: 'orange' },
+  success: { icon: MdCheckCircleOutline, colorScheme: 'green' },
+  error: { icon: MdErrorOutline, colorScheme: 'red' },
+  loading: { colorScheme: 'blue' },
+};
+
 const Toast = (props: ToastProps & RenderProps) => {
-  const { content, onClose, extendedContent, indeterminate = false } = props;
+  const { content, onClose, extendedContent, progress, status = 'info' } = props;
   const { isOpen, onToggle } = useDisclosure();
+
+  const iconColor = (
+    (
+      useMultiStyleConfig('Alert', { colorScheme: STATUSES[status].colorScheme, variant: 'subtle' })
+        .container as any
+    )['--alert-fg'] as string
+  ).substring(7);
+
+  console.log(status, iconColor);
 
   return (
     <Box
@@ -35,12 +69,22 @@ const Toast = (props: ToastProps & RenderProps) => {
           </Button>
         )}
       </Flex>
-      <Box p={3}>
-        {content}
-        <br />
-        {isOpen && extendedContent}
+      <Box p={3} whiteSpace="pre-wrap">
+        <Flex alignItems="center" gap={2}>
+          {status !== 'loading' ? (
+            <Icon as={STATUSES[status].icon} boxSize={5} color={iconColor} />
+          ) : (
+            <CircularProgress isIndeterminate size={5} color={iconColor} />
+          )}
+          {content}
+        </Flex>
+        {isOpen && (
+          <Text fontSize="sm" m={2}>
+            {extendedContent}
+          </Text>
+        )}
       </Box>
-      {indeterminate && <Progress size="xs" isIndeterminate marginTop={2} />}
+      {progress !== undefined && <Progress size="xs" value={progress} marginTop={2} />}
     </Box>
   );
 };

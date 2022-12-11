@@ -1,7 +1,8 @@
 import Toast, { ToastProps } from '@/components/feedback/Toast';
+import { cleanUndefinedProps } from '@/utils/objects';
 import { ToastId, useToast, UseToastOptions } from '@chakra-ui/react';
 
-interface UseToastProps extends UseToastOptions, ToastProps {
+export interface UseToastProps extends UseToastOptions, ToastProps {
   id?: ToastId;
 }
 
@@ -9,16 +10,15 @@ const useCustomToast = () => {
   const toast = useToast();
 
   const toastOptions = (props: UseToastProps) => {
-    const { content, indeterminate, duration, id, ...rest } = props || {};
+    const { content, duration, id, onCloseComplete, ...rest } = props || {};
 
-    return {
+    return cleanUndefinedProps({
       position: 'bottom-right',
-      duration: indeterminate ? null : duration,
-      render: ({ onClose }) => (
-        <Toast content={content} onClose={onClose} indeterminate={indeterminate} {...rest} />
-      ),
+      render: ({ onClose }) => <Toast content={content} onClose={onClose} {...rest} />,
+      duration,
       id,
-    } as UseToastOptions;
+      onCloseComplete,
+    } as UseToastOptions);
   };
 
   const add = (props: UseToastProps) => toast(toastOptions(props));
