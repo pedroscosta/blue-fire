@@ -1,4 +1,5 @@
 import DataTab from '@/tabs/data';
+import SheetTab from '@/tabs/sheet';
 import { lens } from '@dhmk/zustand-lens';
 import { nanoid } from 'nanoid';
 import { ElementType } from 'react';
@@ -17,8 +18,6 @@ interface State {
 
 const nid = nanoid();
 const nid2 = nanoid();
-
-const SheetTab = ({ id }: { id: string }) => <h1>{id}</h1>;
 
 const initialState: State = {
   tabTypes: {
