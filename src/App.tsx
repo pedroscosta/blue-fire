@@ -4,7 +4,23 @@ import { HTML5Backend } from 'react-dnd-html5-backend';
 import './App.css';
 import CustomTitlebar from './components/navigation/CustomTitlebar';
 import MovableTabs from './components/navigation/MovableTabs';
+import { getState } from './store';
 import Theme from './Theme';
+
+const state = getState();
+
+// state.context.set('test', 'test');
+
+const loadExtensions = async () => {
+  const exts = await ipcBridge.getActiveExtensions();
+
+  exts.forEach(async (ext: any) => {
+    const extMain = await import(/* @vite-ignore */ ext.url);
+    extMain.activate();
+  });
+};
+
+loadExtensions();
 
 const App: React.FC = () => {
   return (

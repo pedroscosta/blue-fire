@@ -20,7 +20,10 @@ const ipcBridge = {
       ipcRenderer.removeListener(channel, subscription);
     };
   },
+  // Data loading
   loadData: (sources: Record<string, DataSource>) => ipcRenderer.send('bf:load-data', sources),
+  // Extensions
+  getActiveExtensions: () => ipcRenderer.invoke('bf:extensions:getActive'),
 };
 
 contextBridge.exposeInMainWorld('ipcBridge', ipcBridge);

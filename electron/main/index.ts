@@ -13,11 +13,14 @@ process.env.DIST = join(process.env.DIST_ELECTRON, '../dist');
 process.env.PUBLIC = app.isPackaged
   ? process.env.DIST
   : join(process.env.DIST_ELECTRON, '../public');
+process.env.SRC = join(__dirname, '../../../src');
 
 import { app, BrowserWindow, ipcMain, shell } from 'electron';
+import { existsSync, mkdirSync } from 'fs';
 import { readFile } from 'fs/promises';
 import { release } from 'os';
 import { join } from 'path';
+import ExtensionStore from './extensions/ExtensionStore';
 import { readXLSX } from './utils/fileUtils';
 
 // Disable GPU Acceleration for Windows 7
@@ -43,6 +46,17 @@ const installExtensions = async () => {
     )
     .catch(console.log);
 };
+
+/* ===================================================================================================================
+      Setting userData
+ =================================================================================================================== */
+
+const userDataPath = join(app.getPath('home'), '.bluefire');
+// TODO: Save this to a settings context
+
+if (!existsSync(userDataPath)) {
+  mkdirSync(userDataPath);
+}
 
 /* ===================================================================================================================
         Setting main window
@@ -94,7 +108,19 @@ async function createWindow() {
   });
 }
 
-app.whenReady().then(createWindow);
+app.whenReady().then(() => {
+  /* ===================================================================================================================
+      Extensions store
+ =================================================================================================================== */
+
+  const extensionStore = new ExtensionStore();
+
+  extensionStore.loadExtensions(join(userDataPath, 'extensions'));
+  extensionStore.loadExtensions(
+    join(app.isPackaged ? process.env.DIST : process.env.SRC, 'internal_extensions'),
+  );
+  createWindow();
+});
 
 app.on('window-all-closed', () => {
   win = null;
