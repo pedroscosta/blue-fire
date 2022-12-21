@@ -21,6 +21,14 @@ const semanticTokens = {
       _light: 'gray.200',
       _dark: 'whiteAlpha.300',
     },
+    'bf-divider-highlight': {
+      _light: 'gray.400',
+      _dark: 'whiteAlpha.500',
+    },
+    'bf-highlight': {
+      _light: 'blue.600',
+      _dark: 'white',
+    },
   },
 };
 
