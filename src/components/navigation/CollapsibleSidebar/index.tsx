@@ -1,37 +1,19 @@
+import { useStore } from '@/store';
 import { Box, useDisclosure, VStack } from '@chakra-ui/react';
-import { ElementType, useState } from 'react';
-import { MdAddChart } from 'react-icons/md';
+import { useState } from 'react';
+import shallow from 'zustand/shallow';
 import IconButton from './IconButton';
-import ChartsView from './views/ChartsView';
-
-const mockData: Record<
-  string,
-  { data: { icon: ElementType; title: string }; component: ElementType }
-> = {
-  createChart: {
-    data: {
-      icon: MdAddChart,
-      title: 'Charts',
-    },
-    component: ChartsView,
-  },
-  createChart2: {
-    data: {
-      icon: MdAddChart,
-      title: 'Charts 2',
-    },
-    component: () => {
-      return <div>ChartsView2</div>;
-    },
-  },
-};
 
 const CollapsibleSidebar = () => {
   const { isOpen, onOpen, onClose } = useDisclosure();
 
   const [curView, setCurView] = useState<string>();
 
-  const CurViewComponent = curView ? mockData[curView].component : undefined;
+  const context = useStore((s) => s.context, shallow);
+
+  const views = useStore((s) => s.registry.query, shallow)('bf:sheet-editor-sidebar', context);
+
+  const CurViewComponent = curView ? views[curView].component : undefined;
 
   return (
     <>
@@ -51,7 +33,7 @@ const CollapsibleSidebar = () => {
         borderColor={'bf-divider'}
       >
         <VStack spacing={1} paddingTop={1}>
-          {Object.entries(mockData).map(([id, view]) => (
+          {Object.entries(views).map(([id, view]) => (
             <IconButton
               key={id}
               icon={view.data.icon}

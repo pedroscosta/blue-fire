@@ -1,15 +1,18 @@
 import { lens } from '@dhmk/zustand-lens';
 import Context from './context';
 
+import ChartsView from '@/components/navigation/CollapsibleSidebar/views/ChartsView';
 import useDataLoading from '@/hooks/logic/useDataLoading';
 import { useStore } from '@/store';
 import { Button } from '@chakra-ui/react';
 import { ElementType } from 'react';
+import { MdAddChart } from 'react-icons/md';
 import shallow from 'zustand/shallow';
 
 interface ComponentRegister {
   component: ElementType;
-  condition:
+  data?: any;
+  condition?:
     | ((context: typeof Context) => boolean)
     | {
         key: string;
@@ -18,20 +21,13 @@ interface ComponentRegister {
 }
 
 interface State {
-  components: {
-    [index: string]: { [index: string]: ComponentRegister };
-  };
+  components: Record<string, Record<string, ComponentRegister>>;
 }
 
 interface Actions {
   register: (slot: string, id: string, component: ComponentRegister) => void;
   remove: (slot: string, id: string) => void;
-  query: (
-    slot: string,
-    context: typeof Context,
-  ) => {
-    [index: string]: ElementType;
-  };
+  query: (slot: string, context: typeof Context) => Record<string, ComponentRegister>;
 }
 
 const initialState: State = {
@@ -59,6 +55,15 @@ const initialState: State = {
               Load data
             </Button>
           );
+        },
+      },
+    },
+    'bf:sheet-editor-sidebar': {
+      'bf:charts-view': {
+        component: ChartsView,
+        data: {
+          icon: MdAddChart,
+          title: 'Charts',
         },
       },
     },
@@ -90,13 +95,15 @@ export default lens<State & Actions>((set, get) => {
 
       if (!components[slot]) return {};
 
-      const result: { [index: string]: ElementType } = {};
+      const result: Record<string, ComponentRegister> = {};
 
       Object.entries(components[slot]).forEach(([k, v]) => {
-        if (typeof v.condition === 'object') {
-          if (context.satisfies(v.condition.key, v.condition.value)) result[k] = v.component;
+        if (!v.condition) {
+          result[k] = v;
+        } else if (typeof v.condition === 'object') {
+          if (context.satisfies(v.condition.key, v.condition.value)) result[k] = v;
         } else {
-          if (v.condition(context)) result[k] = v.component;
+          if (v.condition(context)) result[k] = v;
         }
       });
 
