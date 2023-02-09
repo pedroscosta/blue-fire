@@ -1,9 +1,11 @@
 import react from '@vitejs/plugin-react';
 import { readFileSync, rmSync, writeFileSync } from 'fs';
 import path from 'path';
-import { defineConfig } from 'vite';
+import { defineConfig, normalizePath } from 'vite';
 import electron from 'vite-electron-plugin';
 import { customStart, loadViteEnv } from 'vite-electron-plugin/plugin';
+import { viteStaticCopy } from 'vite-plugin-static-copy';
+import tsconfigPaths from 'vite-tsconfig-paths';
 import pkg from './package.json';
 
 // TODO: Fix or replace react-virtualized
@@ -58,6 +60,15 @@ export default defineConfig({
       ],
     }),
     reactVirtualized(),
+    tsconfigPaths(),
+    viteStaticCopy({
+      targets: [
+        {
+          src: normalizePath(path.resolve(__dirname, './exports') + '/[!.]*'),
+          dest: './exports',
+        },
+      ],
+    }),
   ],
   server: process.env.VSCODE_DEBUG
     ? (() => {
