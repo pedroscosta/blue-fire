@@ -1,6 +1,5 @@
 import TitleBar from 'frameless-titlebar';
 import icon from '../../../assets/blue-fire-512.png';
-import createMenu from './menu';
 
 const CustomTitlebar = () => {
   /*
@@ -39,18 +38,18 @@ const CustomTitlebar = () => {
         }
       }
       title="BlueFire"
-      onClose={() => window.electron.closeWindow()}
-      onMinimize={() => window.electron.minimizeWindow()}
-      onMaximize={() => window.electron.maximizeWindow()}
+      onClose={() => ipcBridge.closeWindow()}
+      onMinimize={() => ipcBridge.minimizeWindow()}
+      onMaximize={() => ipcBridge.maximizeWindow()}
       // when the titlebar is double clicked
-      onDoubleClick={() => window.electron.maximizeWindow()}
+      onDoubleClick={() => ipcBridge.maximizeWindow()}
       // hide minimize windows control
       disableMinimize={false}
       // hide maximize windows control
       disableMaximize={false}
       // is the current window maximized?
-      maximized={window.electron.isWindowMaximized()}
-      menu={createMenu()}
+      maximized={ipcBridge.isWindowMaximized()}
+      menu={undefined}
     >
       {/* custom titlebar items */}
     </TitleBar>
