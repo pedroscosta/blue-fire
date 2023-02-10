@@ -11,6 +11,7 @@
     buildResources: 'electron/resources',
   },
   files: ['dist-electron', 'dist'],
+  publish: ['github'],
   win: {
     target: [
       {

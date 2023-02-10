@@ -7,10 +7,6 @@ on:
 
 jobs:
   publish:
-    # To enable auto publishing to github, update your electron publisher
-    # config in package.json > "build" and remove the conditional below
-    if: ${{ github.repository_owner == 'pedroscosta' }}
-
     runs-on: ${{ matrix.os }}
 
     strategy:
@@ -19,19 +15,18 @@ jobs:
 
     steps:
       - name: Checkout git repo
-        uses: actions/checkout@v1
+        uses: actions/checkout@v3
 
-      - name: Install Node and NPM
-        uses: actions/setup-node@v1
+      - name: Install Node and Yarn
+        uses: actions/setup-node@v3
         with:
           node-version: 16
-          cache: npm
+          cache: yarn
 
       - name: Install and build
         run: |
-          npm install
-          npm run postinstall
-          npm run build
+          yarn install
+          yarn build
 
       - name: Publish releases
         env:
@@ -44,4 +39,4 @@ jobs:
           GH_TOKEN: ${{ secrets.GH_TOKEN }}
           # --mac --linux
         run: |
-          npm exec electron-builder -- --publish always --win
+          yarn electron-builder --publish always

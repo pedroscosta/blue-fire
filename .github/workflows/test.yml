@@ -11,22 +11,20 @@ jobs:
         os: [macos-latest, windows-latest, ubuntu-latest]
 
     steps:
-      - name: Check out Git repository
-        uses: actions/checkout@v1
+      - name: Checkout git repo
+        uses: actions/checkout@v3
 
-      - name: Install Node.js and NPM
-        uses: actions/setup-node@v2
+      - name: Install Node and Yarn
+        uses: actions/setup-node@v3
         with:
           node-version: 16
-          cache: npm
+          cache: yarn
 
-      - name: npm install
+      - name: yarn install
         run: |
-          npm install
+          yarn install
 
-      - name: npm test
-        env:
-          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      - name: yarn test
         run: |
-          npm run lint
-          npm exec tsc
+          yarn lint
+          yarn build
