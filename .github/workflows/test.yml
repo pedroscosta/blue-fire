@@ -24,6 +24,14 @@ jobs:
         run: |
           yarn install
 
+      - name: yarn install (internal modules)
+        run: |
+          yarn extensions:run_all install
+
+      - name: build internal modules
+        run: |
+          yarn extensions:run_all build
+
       - name: yarn test
         run: |
           yarn lint

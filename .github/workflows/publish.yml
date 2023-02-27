@@ -23,9 +23,20 @@ jobs:
           node-version: 16
           cache: yarn
 
-      - name: Install and build
+      - name: yarn install
         run: |
           yarn install
+
+      - name: yarn install (internal modules)
+        run: |
+          yarn extensions:run_all install
+
+      - name: build internal modules
+        run: |
+          yarn extensions:run_all build
+
+      - name: yarn build
+        run: |
           yarn build
 
       - name: Publish releases
@@ -39,4 +50,4 @@ jobs:
           GH_TOKEN: ${{ secrets.GH_TOKEN }}
           # --mac --linux
         run: |
-          yarn electron-builder --publish always
+          yarn electron-builder --win --publish always

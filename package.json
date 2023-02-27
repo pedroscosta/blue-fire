@@ -24,7 +24,10 @@
     "dev": "vite",
     "build": "tsc && vite build",
     "dist": "tsc && vite build && electron-builder",
-    "lint": "eslint . --ext .js,.jsx,.ts,.tsx"
+    "lint": "eslint . --ext .js,.jsx,.ts,.tsx",
+    "extensions:run_all": "node run_all.js",
+    "extensions:install": "for D in ./src/internal_extensions/[!_]*/; do yarn --cwd \"${D}\"; done",
+    "extensions:build": "for D in ./src/internal_extensions/[!_]*/; do yarn --cwd \"${D}\" build; done"
   },
   "engines": {
     "node": "^14.18.0 || >=16.0.0"
