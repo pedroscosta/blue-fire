@@ -116,11 +116,12 @@ const GridLayout = ({ width, height, gridSize = [24, 24] }: GridLayoutProps) => 
 
     if (!dummyPanel) return;
 
-    const topLeft = ['top', 'left', 'topLeft'].includes(dir);
+    const top = ['top', 'topLeft', 'topRight'].includes(dir);
+    const left = ['left', 'topLeft', 'bottomLeft'].includes(dir);
 
     const { x, y, w, h } = {
-      x: panels[id].x - (topLeft ? delta.width : 0),
-      y: panels[id].y - (topLeft ? delta.height : 0),
+      x: panels[id].x - (left ? delta.width : 0),
+      y: panels[id].y - (top ? delta.height : 0),
       w: panels[id].w + delta.width,
       h: panels[id].h + delta.height,
     };
