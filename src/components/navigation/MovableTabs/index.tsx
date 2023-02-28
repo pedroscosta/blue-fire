@@ -93,6 +93,8 @@ const MovableTabs = () => {
         <Spacer />
         <Flex direction={'row'} gap={1} paddingRight={1}>
           {Object.entries(actionButtons).map(([key, value]) => {
+            if (!value.component) return;
+
             const RegisteredComponent = value.component;
 
             return <RegisteredComponent key={key} />;

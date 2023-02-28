@@ -1,6 +1,7 @@
 import { lens } from '@dhmk/zustand-lens';
 import Context from './context';
 
+import XYChart from '@/components/charts/XYChart';
 import ChartsView from '@/components/navigation/CollapsibleSidebar/views/ChartsView';
 import useDataLoading from '@/hooks/logic/useDataLoading';
 import { useStore } from '@/store';
@@ -10,7 +11,7 @@ import { MdAddChart } from 'react-icons/md';
 import shallow from 'zustand/shallow';
 
 interface ComponentRegister {
-  component: ElementType;
+  component: ElementType | undefined;
   data?: any;
   condition?:
     | ((context: typeof Context) => boolean)
@@ -64,6 +65,15 @@ const initialState: State = {
         data: {
           icon: MdAddChart,
           title: 'Charts',
+        },
+      },
+    },
+    'bf:chart-types': {
+      'bf:xy-chart': {
+        component: XYChart,
+        data: {
+          icon: MdAddChart,
+          name: 'Charts',
         },
       },
     },

@@ -1,7 +1,8 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 import { Box } from '@chakra-ui/react';
 import { nanoid } from 'nanoid';
-import { useState } from 'react';
+import { useRef, useState } from 'react';
+import { useDrop } from 'react-dnd';
 import { DraggableData, ResizableDelta } from 'react-rnd';
 import GridItem, { ResizeDirection } from './GridItem';
 
@@ -16,6 +17,7 @@ export interface PanelData {
   y: number;
   w: number;
   h: number;
+  hover?: boolean;
 }
 
 const nid = nanoid();
@@ -46,6 +48,62 @@ const GridLayout = ({ width, height, gridSize = [24, 24] }: GridLayoutProps) => 
       [key]: { ...last[key], ...(typeof state === 'function' ? state(last[key]) : state) },
     }));
   };
+
+  // // // // // // // // // // // DND MANAGEMENT
+
+  const ref = useRef<HTMLDivElement>(null);
+
+  const [{ isOver, isOverCurrent }, dropRef] = useDrop({
+    accept: 'bf:chart-sidebar-item',
+    hover: (item, monitor) => {
+      if (!ref.current) return;
+
+      let pos = monitor.getClientOffset();
+      if (!pos) return;
+
+      const targetSize = ref.current.getBoundingClientRect();
+
+      pos = {
+        x: Math.floor((pos.x - targetSize.x) / gridUnits[0]),
+        y: Math.floor((pos.y - targetSize.y) / gridUnits[1]),
+      };
+
+      if (isOverCurrent && !dummyPanel) setDummyPanel({ ...pos, w: 2, h: 2, hover: true });
+
+      if (isOverCurrent && dummyPanel && (pos.x !== dummyPanel.x || pos.y !== dummyPanel.y)) {
+        let collided = false;
+
+        Object.entries(panels).forEach(([key, value]) => {
+          if (isColliding({ ...dummyPanel, ...pos }, value)) collided = true;
+        });
+
+        if (!collided) setDummyPanel((last) => ({ ...last, ...pos } as PanelData));
+      }
+
+      if (!isOverCurrent && dummyPanel && dummyPanel.hover) setDummyPanel(undefined);
+    },
+    drop: (item, monitor) => {
+      if (
+        dummyPanel &&
+        dummyPanel.hover &&
+        dummyPanel.x >= 0 &&
+        dummyPanel.y >= 0 &&
+        dummyPanel.x < gridSize[0] &&
+        dummyPanel.y < gridSize[1]
+      )
+        setPanelState(nanoid(), { ...dummyPanel, hover: undefined });
+    },
+    collect: (monitor) => {
+      if (!monitor.isOver({ shallow: true }) && dummyPanel && dummyPanel.hover)
+        setDummyPanel(undefined);
+      return {
+        isOver: monitor.isOver(),
+        isOverCurrent: monitor.isOver({ shallow: true }),
+      };
+    },
+  });
+
+  dropRef(ref);
 
   // // // // // // // // // // // RESIZING MANAGEMENT
 
@@ -123,7 +181,7 @@ const GridLayout = ({ width, height, gridSize = [24, 24] }: GridLayoutProps) => 
   };
 
   return (
-    <Box style={{ width, height, flex: '1 1 auto', display: 'flex' }}>
+    <Box style={{ width, height, flex: '1 1 auto', display: 'flex' }} ref={ref}>
       {dummyPanel && (
         <GridItem
           key={'dummy'}
