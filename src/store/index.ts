@@ -5,6 +5,7 @@ import { immer } from 'zustand/middleware/immer';
 import context from './slices/context';
 import data from './slices/data';
 import registry from './slices/registry';
+import sheets from './slices/sheets';
 import tabs from './slices/tabs';
 
 import create_ from 'zustand/vanilla';
@@ -17,6 +18,7 @@ const store = create_(
         data: data,
         context: context,
         registry: registry,
+        sheets: sheets,
       }),
     ),
   ),
