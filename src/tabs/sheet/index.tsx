@@ -10,7 +10,7 @@ const SheetTab = ({ id }: { id: string }) => {
   return (
     <Box style={{ flex: '1 1 auto', display: 'flex', flexDirection: 'row', width: '100%' }}>
       <Box p={0.5} style={{ flex: '1 1 auto', display: 'flex', overflow: 'hidden' }}>
-        <AutoSizer>{({ height, width }) => <GridLayout height={height} width={width} />}</AutoSizer>
+        <AutoSizer>{({ height, width }) => <GridLayout height={height} width={width} tabId={id} />}</AutoSizer>
       </Box>
       <CollapsibleSidebar />
     </Box>

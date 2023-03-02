@@ -14,7 +14,11 @@ interface State {
 }
 
 interface Actions {
-  updateChart: (tab: string, id: string, data: ChartData) => void;
+  updateChart: (
+    tab: string,
+    id: string,
+    data: ChartData | ((past: ChartData) => ChartData),
+  ) => void;
 }
 
 const initialState: State = {
@@ -25,11 +29,12 @@ export default lens<State & Actions>((set) => {
   return {
     ...initialState,
 
-    updateChart: (tab: string, id: string, data: ChartData) => {
+    updateChart: (tab: string, id: string, data: ChartData | ((past: ChartData) => ChartData)) => {
       set((draft) => {
-        if (!draft.sheets[tab]) return;
+        if (!draft.sheets[tab]) draft.sheets[tab] = {};
 
-        draft.sheets[tab][id] = data;
+        draft.sheets[tab][id] =
+          typeof data === 'function' ? data(draft.sheets[tab][id] || {}) : data;
       });
     },
   };

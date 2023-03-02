@@ -1,4 +1,5 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
+import { useStore } from '@/store';
 import { Box } from '@chakra-ui/react';
 import { nanoid } from 'nanoid';
 import { useRef, useState } from 'react';
@@ -9,6 +10,7 @@ import GridItem, { ResizeDirection } from './GridItem';
 interface GridLayoutProps {
   width: number;
   height: number;
+  tabId: string;
   gridSize?: [number, number];
 }
 
@@ -29,13 +31,20 @@ const isColliding = (moving: PanelData, fixed: PanelData) =>
   moving.y + moving.h > fixed.y &&
   fixed.y + fixed.h > moving.y;
 
-const GridLayout = ({ width, height, gridSize = [24, 24] }: GridLayoutProps) => {
+const GridLayout = ({ width, height, tabId, gridSize = [24, 24] }: GridLayoutProps) => {
   const gridUnits: [number, number] = [width / gridSize[0], height / gridSize[1]];
 
-  const [panels, setPanels] = useState<Record<string, PanelData>>({
-    [nid]: { x: 0, y: 0, w: 2, h: 2 },
-    [nid2]: { x: 3, y: 4, w: 2, h: 2 },
-  });
+  // const [panels, setPanels] = useState<Record<string, PanelData>>({
+  //   [nid]: { x: 0, y: 0, w: 2, h: 2 },
+  //   [nid2]: { x: 3, y: 4, w: 2, h: 2 },
+  // });
+
+  const [sheet, updateChart] = useStore((s) => [
+    s.sheets.sheets[tabId] || {},
+    s.sheets.updateChart,
+  ]);
+
+  const panels = Object.fromEntries(Object.entries(sheet).map(([k, v]) => [k, v.panelData]));
 
   const [dummyPanel, setDummyPanel] = useState<PanelData>();
 
@@ -43,10 +52,7 @@ const GridLayout = ({ width, height, gridSize = [24, 24] }: GridLayoutProps) => 
     key: string,
     state: Partial<PanelData> | ((prev: PanelData) => Partial<PanelData>),
   ) => {
-    setPanels((last) => ({
-      ...last,
-      [key]: { ...last[key], ...(typeof state === 'function' ? state(last[key]) : state) },
-    }));
+    updateChart(tabId, key, (last) => ({ ...last, panelData: { ...last.panelData, ...state } }));
   };
 
   // // // // // // // // // // // DND MANAGEMENT
