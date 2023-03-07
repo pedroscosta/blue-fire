@@ -1,11 +1,11 @@
 import { lens } from '@dhmk/zustand-lens';
 import Context from './context';
 
-import XYChart from '@/components/charts/XYChart';
 import ChartsView from '@/components/navigation/CollapsibleSidebar/views/ChartsView';
 import useDataLoading from '@/hooks/logic/useDataLoading';
 import { useStore } from '@/store';
 import { Button } from '@chakra-ui/react';
+import { ChartComponentType, ChartData } from 'bluefire';
 import { ElementType } from 'react';
 import { MdAddChart } from 'react-icons/md';
 import shallow from 'zustand/shallow';
@@ -19,6 +19,16 @@ interface ComponentRegister {
         key: string;
         value: string;
       };
+}
+
+export interface ChartComponent extends ComponentRegister {
+  component: ElementType;
+  data: {
+    name: string;
+    startingData: Partial<ChartData>;
+    type: ChartComponentType;
+    icon?: ElementType;
+  };
 }
 
 interface State {
@@ -68,15 +78,15 @@ const initialState: State = {
         },
       },
     },
-    'bf:chart-types': {
-      'bf:xy-chart': {
-        component: XYChart,
-        data: {
-          icon: MdAddChart,
-          name: 'Charts',
-        },
-      },
-    },
+    // 'bf:chart-types': {
+    //   'bf:xy-chart': {
+    //     component: XYChart,
+    //     data: {
+    //       icon: MdAddChart,
+    //       name: 'Charts',
+    //     },
+    //   },
+    // },
   },
 };
 

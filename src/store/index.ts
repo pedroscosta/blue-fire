@@ -8,9 +8,9 @@ import registry from './slices/registry';
 import sheets from './slices/sheets';
 import tabs from './slices/tabs';
 
-import create_ from 'zustand/vanilla';
+// import createStore from 'zustand/vanilla';
 
-const store = create_(
+const store = create(
   devtools(
     immer(
       withLenses({
@@ -28,4 +28,4 @@ export type BlueFireStore = typeof store;
 
 export const { getState, setState, subscribe, destroy } = store;
 
-export const useStore = create(store);
+export const useStore = store;
