@@ -1,0 +1,54 @@
+import { nanoid } from 'nanoid';
+import { ElementType } from 'react';
+
+const getState = () => (window as any).BluefireStore.getState();
+
+const charts = {
+  registerBaseType: (id: string, name: string, component: ElementType) => {
+    getState().registry.register('bf:chart-types', id, {
+      component,
+      data: { name },
+    });
+  },
+
+  registerComponent: (
+    id: string,
+    name: string,
+    component: ElementType,
+    type: ChartComponentType,
+    baseType: string,
+    icon?: ElementType,
+  ) => {
+    getState().registry.register('bf:chart-components', id, {
+      component,
+      data: { name, type, startingData: { components: { [nanoid()]: { component: id, props: {} } } }  satisfies Partial<ChartData>, icon } ,
+    });
+  },
+};
+
+export { charts };
+
+export enum ChartComponentType {
+  CHART,
+  ACCESSORY,
+}
+
+export enum DataType {
+  NUMBER,
+  CATEGORY,
+}
+
+export interface ChartData {
+  panelData: PanelData;
+  baseType: string;
+  series: Record<string, { col: string; type: DataType }>;
+  components: Record<string, { component: string; props: any }>;
+}
+
+export interface PanelData {
+  x: number;
+  y: number;
+  w: number;
+  h: number;
+  hover?: boolean;
+}
