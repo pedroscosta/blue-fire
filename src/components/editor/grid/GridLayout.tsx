@@ -1,6 +1,8 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
+import BaseChart from '@/components/charts/BaseChart';
 import { useStore } from '@/store';
 import { Box } from '@chakra-ui/react';
+import { ChartData, PanelData } from 'bluefire';
 import { nanoid } from 'nanoid';
 import { useRef, useState } from 'react';
 import { useDrop } from 'react-dnd';
@@ -14,14 +16,6 @@ interface GridLayoutProps {
   gridSize?: [number, number];
 }
 
-export interface PanelData {
-  x: number;
-  y: number;
-  w: number;
-  h: number;
-  hover?: boolean;
-}
-
 const nid = nanoid();
 const nid2 = nanoid();
 
@@ -33,11 +27,6 @@ const isColliding = (moving: PanelData, fixed: PanelData) =>
 
 const GridLayout = ({ width, height, tabId, gridSize = [24, 24] }: GridLayoutProps) => {
   const gridUnits: [number, number] = [width / gridSize[0], height / gridSize[1]];
-
-  // const [panels, setPanels] = useState<Record<string, PanelData>>({
-  //   [nid]: { x: 0, y: 0, w: 2, h: 2 },
-  //   [nid2]: { x: 3, y: 4, w: 2, h: 2 },
-  // });
 
   const [sheet, updateChart] = useStore((s) => [
     s.sheets.sheets[tabId] || {},
@@ -59,7 +48,7 @@ const GridLayout = ({ width, height, tabId, gridSize = [24, 24] }: GridLayoutPro
 
   const ref = useRef<HTMLDivElement>(null);
 
-  const [{ isOver, isOverCurrent }, dropRef] = useDrop({
+  const [{ isOverCurrent }, dropRef] = useDrop({
     accept: 'bf:chart-sidebar-item',
     hover: (item, monitor) => {
       if (!ref.current) return;
@@ -97,13 +86,17 @@ const GridLayout = ({ width, height, tabId, gridSize = [24, 24] }: GridLayoutPro
         dummyPanel.x < gridSize[0] &&
         dummyPanel.y < gridSize[1]
       )
-        setPanelState(nanoid(), { ...dummyPanel, hover: undefined });
+        updateChart(tabId, nanoid(), {
+          series: {},
+          components: {},
+          ...(item as any).startingData,
+          panelData: { ...dummyPanel, hover: undefined },
+        } as ChartData);
     },
     collect: (monitor) => {
       if (!monitor.isOver({ shallow: true }) && dummyPanel && dummyPanel.hover)
         setDummyPanel(undefined);
       return {
-        isOver: monitor.isOver(),
         isOverCurrent: monitor.isOver({ shallow: true }),
       };
     },
@@ -212,7 +205,7 @@ const GridLayout = ({ width, height, tabId, gridSize = [24, 24] }: GridLayoutPro
             onResize={onResize}
             onResizeStop={onResizeStop}
           >
-            <span className="text">{id}</span>
+            <BaseChart tabId={tabId} id={id} />
           </GridItem>
         );
       })}
