@@ -11,6 +11,9 @@ export default defineConfig({
       bluefire: 'Bluefire',
     }),
   ],
+  define: {
+    'process.env.NODE_ENV': '"production"',
+  },
   build: {
     lib: {
       entry: resolve('src', 'main'),
