@@ -85,6 +85,8 @@ async function createWindow() {
     frame: false,
     // Hide the titlebar from MacOS applications while keeping the stop lights
     titleBarStyle: 'hidden',
+    width: 1600,
+    height: 900,
   });
 
   if (process.env.VITE_DEV_SERVER_URL) {
