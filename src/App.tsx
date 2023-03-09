@@ -9,8 +9,6 @@ import Theme from './Theme';
 
 const state = getState();
 
-// state.context.set('test', 'test');
-
 const loadExtensions = async () => {
   const exts = await ipcBridge.getActiveExtensions();
 

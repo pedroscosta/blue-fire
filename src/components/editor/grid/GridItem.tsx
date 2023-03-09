@@ -1,10 +1,15 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
-import { Box } from '@chakra-ui/react';
+import { Box, Popover, PopoverAnchor, PopoverContent, Stack } from '@chakra-ui/react';
 import { ReactNode, useState } from 'react';
 import { DraggableData, ResizableDelta, Rnd } from 'react-rnd';
-import { PanelData } from './GridLayout';
 
+import TooltipIconButton from '@/components/inputs/TooltipIconButton';
+import { useStore } from '@/store';
 import { roundObject } from '@/utils/math';
+import { PanelData } from 'bluefire';
+import { HiOutlineDatabase } from 'react-icons/hi';
+import { MdAdd } from 'react-icons/md';
+import shallow from 'zustand/shallow';
 import './GridItem.css';
 
 export type ResizeDirection =
@@ -37,6 +42,7 @@ interface GridItemProps {
   panel: PanelData;
   id: string;
   gridUnits: [number, number];
+  gridSize: [number, number];
   children?: ReactNode;
   onResizeStart?: (id: string, dir: ResizeDirection) => void;
   onResize?: (id: string, dir: ResizeDirection, delta: ResizableDelta) => void;
@@ -47,10 +53,18 @@ interface GridItemProps {
   dummy?: boolean;
 }
 
+const getPopoverPosition = (p: PanelData, gs: [number, number]) => {
+  if (p.x + p.w < gs[0]) return 'right-start';
+  if (p.x > 0) return 'left-start';
+  if (p.y + p.h < gs[1]) return 'bottom-end';
+  if (p.y > 0) return 'top-end';
+};
+
 const GridItem = ({
   panel,
   id,
   gridUnits,
+  gridSize,
   children,
   onResizeStart,
   onResize,
@@ -61,6 +75,12 @@ const GridItem = ({
   dummy,
 }: GridItemProps) => {
   const [resizing, setResizing] = useState(false);
+  const [dragging, setDragging] = useState(false);
+
+  const context = useStore((s) => s.context, shallow);
+  const selected = context.state['bf:selected-chart'] === id;
+
+  const popoverPos = getPopoverPosition(panel, gridSize);
 
   return (
     <Rnd
@@ -82,21 +102,67 @@ const GridItem = ({
         setResizing(false);
         onResizeStop && onResizeStop(id, dir, convertResizeDelta(delta, gridUnits));
       }}
-      onDragStart={(_e, data) => onDragStart && onDragStart(id, convertDragData(data, gridUnits))}
+      onDragStart={(_e, data) => {
+        setDragging(true);
+        onDragStart && onDragStart(id, convertDragData(data, gridUnits));
+      }}
       onDrag={(_e, data) => onDrag && onDrag(id, convertDragData(data, gridUnits))}
-      onDragStop={(_e, data) => onDragStop && onDragStop(id, convertDragData(data, gridUnits))}
+      onDragStop={(_e, data) => {
+        setDragging(false);
+        onDragStop && onDragStop(id, convertDragData(data, gridUnits));
+      }}
       className={resizing ? 'react-draggable-dragging' : ''}
     >
-      <Box p={1} height="100%">
-        <Box
-          borderWidth={dummy ? '2px' : '1px'}
-          borderColor={'divider'}
-          borderStyle={dummy ? 'dashed' : 'solid'}
-          height="100%"
-        >
-          {children}
-        </Box>
-      </Box>
+      <Popover
+        placement={popoverPos ?? 'right-start'}
+        isLazy
+        isOpen={!(dragging || resizing) && selected && popoverPos != undefined}
+      >
+        <PopoverAnchor>
+          <Box
+            p={1}
+            height="100%"
+            onClick={(e) => {
+              context.set('bf:selected-chart', selected ? undefined : id);
+              // e.stopPropagation();
+            }}
+          >
+            <Box
+              borderWidth={dummy ? '2px' : '1px'}
+              borderColor={'divider'}
+              borderStyle={dummy ? 'dashed' : 'solid'}
+              height="100%"
+              p={2}
+            >
+              {children}
+            </Box>
+          </Box>
+        </PopoverAnchor>
+        <PopoverContent w={'auto'} bg={'transparent'} border="">
+          <Stack
+            direction={
+              ['right', 'left'].includes(popoverPos?.split('-')[0] || '') ? 'column' : 'row'
+            }
+          >
+            <TooltipIconButton
+              colorScheme="blue"
+              variant="outline"
+              aria-label="Add components"
+              icon={<MdAdd />}
+              boxSize={8}
+              placement="right"
+            />
+            <TooltipIconButton
+              colorScheme="blue"
+              variant="outline"
+              aria-label="Data"
+              icon={<HiOutlineDatabase />}
+              boxSize={8}
+              placement="right"
+            />
+          </Stack>
+        </PopoverContent>
+      </Popover>
     </Rnd>
   );
 };

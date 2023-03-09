@@ -42,8 +42,6 @@ const BaseChart = ({ tabId, id }: { tabId: string; id: string }) => {
             {Object.entries(data.components).map(([k, v]) => {
               const Element = registry.components['bf:chart-components'][v.component]?.component;
 
-              console.log(v);
-
               if (!Element) return;
 
               return (

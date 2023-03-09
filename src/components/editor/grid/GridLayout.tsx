@@ -28,9 +28,10 @@ const isColliding = (moving: PanelData, fixed: PanelData) =>
 const GridLayout = ({ width, height, tabId, gridSize = [24, 24] }: GridLayoutProps) => {
   const gridUnits: [number, number] = [width / gridSize[0], height / gridSize[1]];
 
-  const [sheet, updateChart] = useStore((s) => [
+  const [sheet, updateChart, context] = useStore((s) => [
     s.sheets.sheets[tabId] || {},
     s.sheets.updateChart,
+    s.context,
   ]);
 
   const panels = Object.fromEntries(Object.entries(sheet).map(([k, v]) => [k, v.panelData]));
@@ -181,12 +182,19 @@ const GridLayout = ({ width, height, tabId, gridSize = [24, 24] }: GridLayoutPro
   };
 
   return (
-    <Box style={{ width, height, flex: '1 1 auto', display: 'flex' }} ref={ref}>
+    <Box
+      style={{ width, height, flex: '1 1 auto', display: 'flex' }}
+      ref={ref}
+      onClick={(e) => {
+        if (e.target === e.currentTarget) context.set('bf:selected-chart', undefined);
+      }}
+    >
       {dummyPanel && (
         <GridItem
           key={'dummy'}
           panel={dummyPanel}
           gridUnits={gridUnits}
+          gridSize={gridSize}
           id={'dummy'}
           dummy
         ></GridItem>
@@ -197,6 +205,7 @@ const GridLayout = ({ width, height, tabId, gridSize = [24, 24] }: GridLayoutPro
             key={id}
             panel={panel}
             gridUnits={gridUnits}
+            gridSize={gridSize}
             id={id}
             onDragStart={onDragStart}
             onDrag={onDrag}
