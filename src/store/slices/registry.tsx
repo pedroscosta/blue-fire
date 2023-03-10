@@ -1,13 +1,14 @@
 import { lens } from '@dhmk/zustand-lens';
 import Context from './context';
 
+import ChartsPropertiesView from '@/components/navigation/CollapsibleSidebar/views/ChartPropertiesView';
 import ChartsView from '@/components/navigation/CollapsibleSidebar/views/ChartsView';
 import useDataLoading from '@/hooks/logic/useDataLoading';
 import { useStore } from '@/store';
 import { Button } from '@chakra-ui/react';
 import { ChartComponentType, ChartData } from 'bluefire';
 import { ElementType } from 'react';
-import { MdAddChart } from 'react-icons/md';
+import { MdAddChart, MdOutlineEditNote } from 'react-icons/md';
 import shallow from 'zustand/shallow';
 
 interface ComponentRegister {
@@ -17,7 +18,7 @@ interface ComponentRegister {
     | ((context: typeof Context) => boolean)
     | {
         key: string;
-        value: string;
+        value?: string;
       };
 }
 
@@ -77,6 +78,16 @@ const initialState: State = {
           title: 'Charts',
         },
       },
+      'bf:chart-properties-view': {
+        component: ChartsPropertiesView,
+        condition: {
+          key: 'bf:selected-chart',
+        },
+        data: {
+          icon: MdOutlineEditNote,
+          title: 'Properties',
+        },
+      },
     },
     // 'bf:chart-types': {
     //   'bf:xy-chart': {
@@ -121,6 +132,7 @@ export default lens<State & Actions>((set, get) => {
         if (!v.condition) {
           result[k] = v;
         } else if (typeof v.condition === 'object') {
+          if (!v.condition.value && context.state[v.condition.key]) result[k] = v;
           if (context.satisfies(v.condition.key, v.condition.value)) result[k] = v;
         } else {
           if (v.condition(context)) result[k] = v;

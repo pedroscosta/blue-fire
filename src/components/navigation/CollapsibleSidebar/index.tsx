@@ -13,7 +13,7 @@ const CollapsibleSidebar = () => {
 
   const views = useStore((s) => s.registry.query, shallow)('bf:sheet-editor-sidebar', context);
 
-  const CurViewComponent = curView ? views[curView].component : undefined;
+  const CurViewComponent = curView && views[curView] ? views[curView].component : undefined;
 
   return (
     <>
