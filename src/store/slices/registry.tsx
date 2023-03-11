@@ -12,7 +12,7 @@ import { MdAddChart, MdOutlineEditNote } from 'react-icons/md';
 import shallow from 'zustand/shallow';
 
 interface ComponentRegister {
-  component: ElementType | undefined;
+  component?: ElementType;
   data?: any;
   condition?:
     | ((context: typeof Context) => boolean)

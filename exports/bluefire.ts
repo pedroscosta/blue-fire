@@ -52,3 +52,17 @@ export interface PanelData {
   h: number;
   hover?: boolean;
 }
+
+export enum ChartPropertyType {
+  TEXT, BOOLEAN, OPTIONS, NUMBER, COLOR, MULTI_BOOLEAN, DATA_SELECTOR
+}
+
+export interface ChartProperty {
+  type: ChartPropertyType;
+  options?: string[];
+  defaultValue?: any;
+  name: string;
+  desc: string;
+}
+
+export type ChartPropertiesRegister = Record<string, {title: string; groups: {title: string; properties: Record<string, ChartProperty> }[] }>
