@@ -41,6 +41,7 @@ const convertDragData = (data: DraggableData, gridUnits: [number, number]) =>
 interface GridItemProps {
   panel: PanelData;
   id: string;
+  tabId: string;
   gridUnits: [number, number];
   gridSize: [number, number];
   children?: ReactNode;
@@ -63,6 +64,7 @@ const getPopoverPosition = (p: PanelData, gs: [number, number]) => {
 const GridItem = ({
   panel,
   id,
+  tabId,
   gridUnits,
   gridSize,
   children,
@@ -78,7 +80,7 @@ const GridItem = ({
   const [dragging, setDragging] = useState(false);
 
   const context = useStore((s) => s.context, shallow);
-  const selected = context.state['bf:selected-chart'] === id;
+  const selected = context.state['bf:selected-chart-id'] === id;
 
   const popoverPos = getPopoverPosition(panel, gridSize);
 
@@ -123,7 +125,8 @@ const GridItem = ({
             p={1}
             height="100%"
             onClick={(e) => {
-              context.set('bf:selected-chart', selected ? undefined : id);
+              context.set('bf:selected-chart-id', selected ? undefined : id);
+              context.set('bf:selected-chart-tab', selected ? undefined : tabId);
               // e.stopPropagation();
             }}
           >

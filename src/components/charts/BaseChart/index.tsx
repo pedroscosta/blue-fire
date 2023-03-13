@@ -1,27 +1,8 @@
 import { useStore } from '@/store';
 import { ParentSize } from '@visx/responsive';
-import { AnyD3Scale, scaleLinear } from '@visx/scale';
+import { AnyD3Scale } from '@visx/scale';
 import shallow from 'zustand/shallow';
 import ChartContext from './context';
-
-const adata = [
-  { x: 20, y: 50 },
-  { x: 40, y: 10 },
-  { x: 10, y: 20 },
-];
-
-const accessors = {
-  xAccessor: (d: any) => d.x,
-  yAccessor: (d: any) => d.y,
-};
-
-const xScale = scaleLinear<number>({
-  domain: [0, 50],
-});
-
-const yScale = scaleLinear<number>({
-  domain: [0, 50],
-});
 
 const BaseChart = ({ tabId, id }: { tabId: string; id: string }) => {
   const [data, registry] = useStore((s) => [s.sheets.sheets[tabId][id], s.registry], shallow);

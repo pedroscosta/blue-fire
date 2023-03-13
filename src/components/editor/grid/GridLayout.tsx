@@ -196,6 +196,7 @@ const GridLayout = ({ width, height, tabId, gridSize = [24, 24] }: GridLayoutPro
           gridUnits={gridUnits}
           gridSize={gridSize}
           id={'dummy'}
+          tabId={tabId}
           dummy
         ></GridItem>
       )}
@@ -207,6 +208,7 @@ const GridLayout = ({ width, height, tabId, gridSize = [24, 24] }: GridLayoutPro
             gridUnits={gridUnits}
             gridSize={gridSize}
             id={id}
+            tabId={tabId}
             onDragStart={onDragStart}
             onDrag={onDrag}
             onDragStop={onDragStop}

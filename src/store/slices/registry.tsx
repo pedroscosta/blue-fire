@@ -80,24 +80,15 @@ const initialState: State = {
       },
       'bf:chart-properties-view': {
         component: ChartsPropertiesView,
-        condition: {
-          key: 'bf:selected-chart',
-        },
+        condition: (ctx) =>
+          ctx.state['bf:selected-chart-id'] != undefined &&
+          ctx.state['bf:current-tab-id'] === ctx.state['bf:selected-chart-tab'],
         data: {
           icon: MdOutlineEditNote,
           title: 'Properties',
         },
       },
     },
-    // 'bf:chart-types': {
-    //   'bf:xy-chart': {
-    //     component: XYChart,
-    //     data: {
-    //       icon: MdAddChart,
-    //       name: 'Charts',
-    //     },
-    //   },
-    // },
   },
 };
 
