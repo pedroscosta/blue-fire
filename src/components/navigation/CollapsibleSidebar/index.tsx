@@ -1,5 +1,5 @@
 import { useStore } from '@/store';
-import { Box, useDisclosure, VStack } from '@chakra-ui/react';
+import { Box, Text, useDisclosure, VStack } from '@chakra-ui/react';
 import { useState } from 'react';
 import shallow from 'zustand/shallow';
 import IconButton from './IconButton';
@@ -24,6 +24,9 @@ const CollapsibleSidebar = () => {
           borderColor={'bf-divider'}
           padding={1}
         >
+          <Text size="md" textAlign={'center'} alignContent="center" fontWeight={400} paddingY={1}>
+            {curView ? views[curView].data.title : ''}
+          </Text>
           <CurViewComponent />
         </Box>
       )}
