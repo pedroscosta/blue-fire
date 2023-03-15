@@ -22,9 +22,14 @@ const CollapsibleSidebar = () => {
           width={`calc(var(--chakra-sizes-80) + 1px)`}
           borderLeft={'1px'}
           borderColor={'bf-divider'}
-          padding={1}
         >
-          <Text size="md" textAlign={'center'} alignContent="center" fontWeight={400} paddingY={1}>
+          <Text
+            fontSize="md"
+            textAlign={'center'}
+            alignContent="center"
+            fontWeight={400}
+            paddingY={1}
+          >
             {curView ? views[curView].data.title : ''}
           </Text>
           <CurViewComponent />

@@ -1,6 +1,7 @@
 import { useStore } from '@/store';
+import { ChartComponent } from '@/store/slices/registry';
 import { HStack, Icon } from '@chakra-ui/react';
-import { ChartComponent, ChartComponentType } from 'bluefire';
+import { ChartComponentType } from 'bluefire';
 import { useDrag } from 'react-dnd';
 import ListButton from '../compoments/ListButton';
 

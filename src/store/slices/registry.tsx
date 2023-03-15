@@ -11,7 +11,7 @@ import { ElementType } from 'react';
 import { MdAddChart, MdOutlineEditNote } from 'react-icons/md';
 import shallow from 'zustand/shallow';
 
-interface ComponentRegister {
+export interface ComponentRegister {
   component?: ElementType;
   data?: any;
   condition?:

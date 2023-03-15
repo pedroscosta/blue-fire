@@ -16,11 +16,16 @@ const initialState: State = {
         title: 'General',
         groups: [
           {
-            title: 'Title',
+            title: 'Information',
             properties: {
               'chart-title': {
                 name: 'Title',
                 desc: 'Chart title (leave empty for no title)',
+                type: ChartPropertyType.TEXT,
+              },
+              'chart-subtitle': {
+                name: 'Subtitle',
+                desc: 'Chart subtitle (leave empty for no subtitle)',
                 type: ChartPropertyType.TEXT,
               },
             },
