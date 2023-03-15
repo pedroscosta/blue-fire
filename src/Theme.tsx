@@ -9,6 +9,14 @@ const config: ThemeConfig = {
 const semanticTokens = {
   // It seems like extension types aren't the best right now. https://github.com/chakra-ui/chakra-ui/issues/4573 and https://github.com/chakra-ui/chakra-ui/issues/4226#issuecomment-904630320
   colors: {
+    'bf-canvas-primary': {
+      _light: 'white',
+      _dark: 'gray.900',
+    },
+    'bf-canvas-subtle': {
+      _light: 'gray.100',
+      _dark: 'gray.800',
+    },
     'bf-bg-primary': {
       _light: 'white',
       _dark: 'gray.800',
@@ -102,6 +110,21 @@ const components: Record<string, StyleConfig> = {
       },
     },
   },
+  Accordion: {
+    baseStyle: {
+      button: {
+        _expanded: {
+          bg: 'bf-canvas-subtle',
+          borderBottom: '1px',
+          borderColor: 'bf-divider',
+        },
+      },
+      panel: {
+        paddingX: 0,
+        paddingY: 2,
+      },
+    },
+  },
 };
 
 const styles: Styles = {
@@ -109,6 +132,9 @@ const styles: Styles = {
     '.butterflies-link': {
       stroke: props.colorMode === 'dark' ? 'whiteAlpha.300' : 'gray.200',
       strokeWidth: '2px',
+    },
+    body: {
+      bg: 'bf-canvas-primary',
     },
   }),
 };
