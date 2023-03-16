@@ -129,13 +129,17 @@ const GridItem = ({
               context.set('bf:selected-chart-tab', selected ? undefined : tabId);
               // e.stopPropagation();
             }}
+            display="flex"
           >
             <Box
               borderWidth={dummy ? '2px' : '1px'}
               borderColor={'divider'}
               borderStyle={dummy ? 'dashed' : 'solid'}
-              height="100%"
               p={2}
+              position="absolute"
+              inset="0"
+              display="flex"
+              flexDir="column"
             >
               {children}
             </Box>

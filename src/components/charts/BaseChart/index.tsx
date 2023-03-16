@@ -1,4 +1,5 @@
 import { useStore } from '@/store';
+import { Box, Text } from '@chakra-ui/react';
 import { ParentSize } from '@visx/responsive';
 import { AnyD3Scale } from '@visx/scale';
 import shallow from 'zustand/shallow';
@@ -15,29 +16,33 @@ const BaseChart = ({ tabId, id }: { tabId: string; id: string }) => {
 
   return (
     <ChartContext.Provider value={{ series, setSeries }}>
-      {/* {BaseElement && <BaseElement tabId={tabId} id={id} />} */}
+      <Text fontSize={'lg'} fontWeight={'semibold'} paddingLeft={2}>
+        {data.components['bf:base-chart']?.props?.['chart-title']}
+      </Text>
+      <Text paddingLeft={2}>{data.components['bf:base-chart']?.props?.['chart-subtitle']}</Text>
+      <Box flex="1 1 auto" position="relative">
+        <ParentSize parentSizeStyles={{ inset: 0, position: 'absolute' }}>
+          {(parent) => (
+            <svg width={parent.width} height={parent.height}>
+              {Object.entries(data.components).map(([k, v]) => {
+                const Element = registry.components['bf:chart-components'][v.component]?.component;
 
-      <ParentSize>
-        {(parent) => (
-          <svg width={parent.width} height={parent.height}>
-            {Object.entries(data.components).map(([k, v]) => {
-              const Element = registry.components['bf:chart-components'][v.component]?.component;
+                if (!Element) return;
 
-              if (!Element) return;
-
-              return (
-                <Element
-                  key={k}
-                  width={parent.width}
-                  height={parent.height}
-                  id={id}
-                  tabId={tabId}
-                />
-              );
-            })}
-          </svg>
-        )}
-      </ParentSize>
+                return (
+                  <Element
+                    key={k}
+                    width={parent.width}
+                    height={parent.height}
+                    id={id}
+                    tabId={tabId}
+                  />
+                );
+              })}
+            </svg>
+          )}
+        </ParentSize>
+      </Box>
     </ChartContext.Provider>
   );
 };
