@@ -17,6 +17,7 @@ import {
   VStack,
 } from '@chakra-ui/react';
 import { ChartProperty, ChartPropertyType } from 'bluefire';
+import produce from 'immer';
 import { useState } from 'react';
 import { MdExpandLess, MdExpandMore } from 'react-icons/md';
 import shallow from 'zustand/shallow';
@@ -26,15 +27,21 @@ interface PropertyItemProps {
   tabId: string;
   propId: string;
   prop: ChartProperty;
+  propValue: any;
+  updateProp: (propId: string, value: any) => void;
 }
 
-const PropertyItem = ({ id, tabId, propId, prop }: PropertyItemProps) => {
+const PropertyItem = ({ id, tabId, propId, prop, propValue, updateProp }: PropertyItemProps) => {
   if (prop.type === ChartPropertyType.TEXT) {
     return (
       <Box w="100%">
         <InputField>
           <InputField.Label>{prop.name}</InputField.Label>
-          <Input placeholder={prop.defaultValue} />
+          <Input
+            placeholder={prop.defaultValue}
+            value={propValue}
+            onChange={(e) => updateProp(propId, e.target.value)}
+          />
           <InputField.Caption>{prop.desc}</InputField.Caption>
         </InputField>
       </Box>
@@ -45,25 +52,34 @@ const PropertyItem = ({ id, tabId, propId, prop }: PropertyItemProps) => {
 };
 
 const ChartsPropertiesView = () => {
+  const [curScope, setCurScope] = useState('bf:base-chart');
+
   const [id, tabId] = useStore(
     (s) => [s.context.state['bf:selected-chart-id'], s.context.state['bf:selected-chart-tab']],
     shallow,
   );
+
   const chartData = useStore((s) => s.sheets.sheets[tabId][id], shallow);
+
+  const chartComps = chartData.components;
 
   const chartTypes = {
     ...useStore((s) => s.registry.components['bf:chart-components']),
     'bf:base-chart': { data: { name: 'None' } },
   } as Record<string, ComponentRegister>;
 
-  const chartComps = ['bf:base-chart'].concat(
-    Object.values(chartData.components).map((v) => v.component),
-  );
-
-  const [curScope, setCurScope] = useState(0);
-
   const chartPropsTemplate =
-    useStore((s) => s.chartProps.state, shallow)[chartComps[curScope]] ?? {};
+    useStore((s) => s.chartProps.state, shallow)[chartComps[curScope].component] ?? {};
+
+  const updateChart = useStore((s) => s.sheets.updateChart, shallow);
+
+  const updateProp = (propId: string, value: any) => {
+    updateChart(tabId, id, (prev) =>
+      produce(prev, (draft) => {
+        if (draft.components[curScope]) draft.components[curScope].props[propId] = value;
+      }),
+    );
+  };
 
   return (
     <VStack spacing={2}>
@@ -79,12 +95,12 @@ const ChartsPropertiesView = () => {
                 as={Button}
                 rightIcon={isOpen ? <MdExpandLess /> : <MdExpandMore />}
               >
-                {chartTypes[chartComps[curScope]].data.name}
+                {chartTypes[chartComps[curScope].component].data.name}
               </MenuButton>
               <MenuList>
-                {chartComps.map((v, k) => (
+                {Object.entries(chartComps).map(([k, v]) => (
                   <MenuItem key={k} onClick={() => setCurScope(k)}>
-                    {chartTypes[chartComps[k]].data.name}
+                    {chartTypes[v.component]?.data?.name}
                   </MenuItem>
                 ))}
               </MenuList>
@@ -107,6 +123,8 @@ const ChartsPropertiesView = () => {
                         propId={propId}
                         prop={prop}
                         key={propId}
+                        propValue={chartComps[curScope].props[propId]}
+                        updateProp={updateProp}
                       />
                     ))}
                   </VStack>

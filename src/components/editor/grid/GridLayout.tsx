@@ -89,8 +89,11 @@ const GridLayout = ({ width, height, tabId, gridSize = [24, 24] }: GridLayoutPro
       )
         updateChart(tabId, nanoid(), {
           series: {},
-          components: {},
           ...(item as any).startingData,
+          components: {
+            'bf:base-chart': { component: 'bf:base-chart', props: {} },
+            ...(item as any).startingData?.components,
+          },
           panelData: { ...dummyPanel, hover: undefined },
         } as ChartData);
     },

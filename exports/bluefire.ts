@@ -19,9 +19,13 @@ const charts = {
     baseType: string,
     icon?: ElementType,
   ) => {
+    const startingData: Partial<ChartData> = {
+      components: { [nanoid()]: { component: id, props: {} } },
+    };
+
     getState().registry.register('bf:chart-components', id, {
       component,
-      data: { name, type, startingData: { components: { [nanoid()]: { component: id, props: {} } } }  satisfies Partial<ChartData>, icon } ,
+      data: { name, type, icon, startingData },
     });
   },
 };
@@ -54,7 +58,13 @@ export interface PanelData {
 }
 
 export enum ChartPropertyType {
-  TEXT, BOOLEAN, OPTIONS, NUMBER, COLOR, MULTI_BOOLEAN, DATA_SELECTOR
+  TEXT,
+  BOOLEAN,
+  OPTIONS,
+  NUMBER,
+  COLOR,
+  MULTI_BOOLEAN,
+  DATA_SELECTOR,
 }
 
 export interface ChartProperty {
@@ -65,4 +75,7 @@ export interface ChartProperty {
   desc: string;
 }
 
-export type ChartPropertiesRegister = Record<string, {title: string; groups: {title: string; properties: Record<string, ChartProperty> }[] }>
+export type ChartPropertiesRegister = Record<
+  string,
+  { title: string; groups: { title: string; properties: Record<string, ChartProperty> }[] }
+>;
