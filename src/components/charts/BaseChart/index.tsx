@@ -1,18 +1,30 @@
 import { useStore } from '@/store';
-import { Box, Text } from '@chakra-ui/react';
+import {
+  Box,
+  Icon,
+  IconButton,
+  Menu,
+  MenuButton,
+  MenuItem,
+  MenuList,
+  Portal,
+  Text,
+} from '@chakra-ui/react';
 import { ParentSize } from '@visx/responsive';
 import { AnyD3Scale } from '@visx/scale';
+import { MdDeleteOutline, MdMoreVert } from 'react-icons/md';
 import shallow from 'zustand/shallow';
 import ChartContext from './context';
 
 const BaseChart = ({ tabId, id }: { tabId: string; id: string }) => {
-  const [data, registry] = useStore((s) => [s.sheets.sheets[tabId][id], s.registry], shallow);
+  const [data, registry, removeChart] = useStore(
+    (s) => [s.sheets.sheets[tabId][id], s.registry, s.sheets.removeChart],
+    shallow,
+  );
   const series: Record<string, AnyD3Scale> = {};
   const setSeries = (id: string, scale: AnyD3Scale) => {
     series[id] = scale;
   };
-
-  // const BaseElement = registry.components['bf:chart-types'][data.baseType]?.component;
 
   return (
     <ChartContext.Provider value={{ series, setSeries }}>
@@ -43,6 +55,31 @@ const BaseChart = ({ tabId, id }: { tabId: string; id: string }) => {
           )}
         </ParentSize>
       </Box>
+      <Menu isLazy size="sm" closeOnBlur>
+        <MenuButton
+          as={IconButton}
+          aria-label="Options"
+          icon={<Icon as={MdMoreVert} boxSize={5} />}
+          variant="ghost"
+          isRound
+          size="sm"
+          position="absolute"
+          top="0"
+          right="0"
+          onClick={(e) => e.stopPropagation()}
+        />
+        <Portal>
+          <MenuList>
+            <MenuItem
+              icon={<Icon as={MdDeleteOutline} boxSize={4} />}
+              command="DEL"
+              onClick={() => removeChart(tabId, id)}
+            >
+              Delete
+            </MenuItem>
+          </MenuList>
+        </Portal>
+      </Menu>
     </ChartContext.Provider>
   );
 };

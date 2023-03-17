@@ -76,7 +76,7 @@ const MovableTabs = () => {
         <Menu isLazy size="sm">
           <MenuButton
             as={IconButton}
-            aria-label="Search database"
+            aria-label="Add tab"
             icon={<BsPlusLg />}
             variant="ghost"
             isRound

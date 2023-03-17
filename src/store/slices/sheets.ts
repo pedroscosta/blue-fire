@@ -11,6 +11,7 @@ interface Actions {
     id: string,
     data: ChartData | ((past: ChartData) => ChartData),
   ) => void;
+  removeChart: (tab: string, id: string) => void;
 }
 
 const initialState: State = {
@@ -27,6 +28,12 @@ export default lens<State & Actions>((set) => {
 
         draft.sheets[tab][id] =
           typeof data === 'function' ? data(draft.sheets[tab][id] || {}) : data;
+      });
+    },
+
+    removeChart: (tab: string, id: string) => {
+      set((draft) => {
+        delete draft.sheets[tab]?.[id];
       });
     },
   };
