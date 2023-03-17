@@ -85,7 +85,7 @@ const ChartsPropertiesView = () => {
     <VStack spacing={2}>
       <HStack w={'100%'}>
         <Text flex="1 1 auto" paddingLeft={2}>
-          Scope:
+          Component:
         </Text>
         <Menu>
           {({ isOpen }) => (
