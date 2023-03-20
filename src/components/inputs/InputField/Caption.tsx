@@ -1,13 +1,9 @@
 import { Text } from '@chakra-ui/react';
-import { ReactNode } from 'react';
+import { InputFieldProps } from '.';
 
-interface CaptionProps {
-  children: ReactNode;
-}
-
-const Caption = ({ children }: CaptionProps) => {
+const Caption = ({ children, inline }: InputFieldProps) => {
   return (
-    <Text fontSize="sm" fontWeight="light" paddingY={1}>
+    <Text fontSize="sm" fontWeight="light" paddingY={inline ? 0 : 1}>
       {children}
     </Text>
   );

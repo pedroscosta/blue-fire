@@ -1,13 +1,9 @@
 import { Text } from '@chakra-ui/react';
-import { ReactNode } from 'react';
+import { InputFieldProps } from '.';
 
-interface LabelProps {
-  children: ReactNode;
-}
-
-const Label = ({ children }: LabelProps) => {
+const Label = ({ children, inline }: InputFieldProps) => {
   return (
-    <Text size="md" fontWeight="semibold" paddingY={1}>
+    <Text size="md" fontWeight="semibold" paddingY={inline ? 0 : 1}>
       {children}
     </Text>
   );
