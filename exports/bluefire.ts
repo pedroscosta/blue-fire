@@ -18,6 +18,7 @@ const charts = {
     type: ChartComponentType,
     baseType: string,
     icon?: ElementType,
+    props?: ComponentPropertiesRegister,
   ) => {
     const startingData: Partial<ChartData> = {
       components: { [nanoid()]: { component: id, props: {} } },
@@ -27,6 +28,8 @@ const charts = {
       component,
       data: { name, type, icon, startingData },
     });
+
+    getState().chartProps.registerProps(id, props);
   },
 };
 
@@ -57,7 +60,7 @@ export interface PanelData {
   hover?: boolean;
 }
 
-export enum ChartPropertyType {
+export enum ComponentPropertyType {
   TEXT,
   BOOLEAN,
   OPTIONS,
@@ -67,15 +70,15 @@ export enum ChartPropertyType {
   DATA_SELECTOR,
 }
 
-export interface ChartProperty {
-  type: ChartPropertyType;
+export interface ComponentProperty {
+  type: ComponentPropertyType;
   options?: string[];
   defaultValue?: any;
   name: string;
   desc: string;
 }
 
-export type ChartPropertiesRegister = Record<
+export type ComponentPropertiesRegister = Record<
   string,
-  { title: string; groups: { title: string; properties: Record<string, ChartProperty> }[] }
+  { title: string; groups: { title: string; properties: Record<string, ComponentProperty> }[] }
 >;

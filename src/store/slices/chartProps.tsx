@@ -1,12 +1,12 @@
 import { lens } from '@dhmk/zustand-lens';
-import { ChartPropertiesRegister, ChartPropertyType } from 'bluefire';
+import { ComponentPropertiesRegister, ComponentPropertyType } from 'bluefire';
 
 interface State {
-  state: Record<string, ChartPropertiesRegister>;
+  state: Record<string, ComponentPropertiesRegister>;
 }
 
 interface Actions {
-  registerProps: (type: string, props: ChartPropertiesRegister) => void;
+  registerProps: (type: string, props: ComponentPropertiesRegister) => void;
 }
 
 const initialState: State = {
@@ -21,12 +21,12 @@ const initialState: State = {
               'chart-title': {
                 name: 'Title',
                 desc: 'Chart title (leave empty for no title)',
-                type: ChartPropertyType.TEXT,
+                type: ComponentPropertyType.TEXT,
               },
               'chart-subtitle': {
                 name: 'Subtitle',
                 desc: 'Chart subtitle (leave empty for no subtitle)',
-                type: ChartPropertyType.TEXT,
+                type: ComponentPropertyType.TEXT,
               },
             },
           },
@@ -40,7 +40,7 @@ export default lens<State & Actions>((set) => {
   return {
     ...initialState,
 
-    registerProps: (type: string, props: ChartPropertiesRegister) => {
+    registerProps: (type: string, props: ComponentPropertiesRegister) => {
       set((draft) => {
         draft.state[type] = props;
       });
