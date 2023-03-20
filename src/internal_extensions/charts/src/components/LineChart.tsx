@@ -1,6 +1,7 @@
 import { curveBasis } from '@visx/curve';
 import { scaleLinear } from '@visx/scale';
 import { LinePath } from '@visx/shape';
+import { ComponentPropertiesRegister, ComponentPropertyType } from 'bluefire';
 
 interface ChartProps {
   width: number;
@@ -52,3 +53,22 @@ const LineChart = ({ width, height }: ChartProps) => {
 };
 
 export default LineChart;
+
+export const LineChartProps: ComponentPropertiesRegister = {
+  appearance: {
+    title: 'Appearance',
+    groups: [
+      {
+        title: 'Line',
+        properties: {
+          'line-color': {
+            name: 'Color',
+            desc: 'Line color',
+            type: ComponentPropertyType.COLOR,
+            defaultValue: 'blue.400',
+          },
+        },
+      },
+    ],
+  },
+};

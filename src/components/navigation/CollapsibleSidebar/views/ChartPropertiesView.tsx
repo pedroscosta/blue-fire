@@ -1,4 +1,5 @@
 import AccordionItem from '@/components/disclosure/AccordionItem';
+import ColorPicker from '@/components/inputs/ColorPicker';
 import InputField from '@/components/inputs/InputField';
 import { useStore } from '@/store';
 import { ComponentRegister } from '@/store/slices/registry';
@@ -16,9 +17,9 @@ import {
   Text,
   VStack,
 } from '@chakra-ui/react';
-import { ChartProperty, ChartPropertyType } from 'bluefire';
+import { ComponentProperty, ComponentPropertyType } from 'bluefire';
 import produce from 'immer';
-import { useState } from 'react';
+import { ReactNode, useState } from 'react';
 import { MdExpandLess, MdExpandMore } from 'react-icons/md';
 import shallow from 'zustand/shallow';
 
@@ -26,29 +27,41 @@ interface PropertyItemProps {
   id: string;
   tabId: string;
   propId: string;
-  prop: ChartProperty;
+  prop: ComponentProperty;
   propValue: any;
   updateProp: (propId: string, value: any) => void;
 }
 
 const PropertyItem = ({ id, tabId, propId, prop, propValue, updateProp }: PropertyItemProps) => {
-  if (prop.type === ChartPropertyType.TEXT) {
-    return (
-      <Box w="100%">
-        <InputField>
-          <InputField.Label>{prop.name}</InputField.Label>
-          <Input
-            placeholder={prop.defaultValue}
-            value={propValue}
-            onChange={(e) => updateProp(propId, e.target.value)}
-          />
+  const inputs: Partial<Record<ComponentPropertyType, ReactNode>> = {
+    [ComponentPropertyType.TEXT]: (
+      <InputField>
+        <InputField.Label>{prop.name + ':'}</InputField.Label>
+        <Input
+          placeholder={prop.defaultValue}
+          value={propValue}
+          onChange={(e) => updateProp(propId, e.target.value)}
+        />
+        <InputField.Caption>{prop.desc}</InputField.Caption>
+      </InputField>
+    ),
+    [ComponentPropertyType.COLOR]: (
+      <InputField inline>
+        <InputField.Header>
+          <InputField.Label>{prop.name + ':'}</InputField.Label>
           <InputField.Caption>{prop.desc}</InputField.Caption>
-        </InputField>
-      </Box>
-    );
-  }
+        </InputField.Header>
+        <ColorPicker
+          value={propValue || prop.defaultValue}
+          onChange={(val) => updateProp(propId, val)}
+        />
+      </InputField>
+    ),
+  };
 
-  return <></>;
+  const Element: ReactNode = inputs[prop.type];
+
+  return <>{Element}</>;
 };
 
 const ChartsPropertiesView = () => {
@@ -117,15 +130,16 @@ const ChartsPropertiesView = () => {
                 <AccordionItem key={group} title={groupId.title + ':'} pl={4} panelProps={{ p: 2 }}>
                   <VStack spacing={3} textAlign="left">
                     {Object.entries(groupId.properties).map(([propId, prop]) => (
-                      <PropertyItem
-                        id={id}
-                        tabId={tabId}
-                        propId={propId}
-                        prop={prop}
-                        key={propId}
-                        propValue={chartComps[curScope].props[propId]}
-                        updateProp={updateProp}
-                      />
+                      <Box w="100%" key={propId}>
+                        <PropertyItem
+                          id={id}
+                          tabId={tabId}
+                          propId={propId}
+                          prop={prop}
+                          propValue={chartComps[curScope].props[propId]}
+                          updateProp={updateProp}
+                        />
+                      </Box>
                     ))}
                   </VStack>
                 </AccordionItem>

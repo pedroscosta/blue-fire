@@ -1,5 +1,6 @@
 import { ChartComponentType, charts } from 'bluefire';
-import LineChart from './components/LineChart';
+import { MdShowChart } from 'react-icons/md';
+import LineChart, { LineChartProps } from './components/LineChart';
 import XYChart from './components/XYChart';
 
 export interface ChartProps {
@@ -15,5 +16,7 @@ export const activate = () => {
     LineChart,
     ChartComponentType.CHART,
     'bf:xy-chart',
+    MdShowChart,
+    LineChartProps,
   );
 };
