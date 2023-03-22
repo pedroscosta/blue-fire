@@ -1,6 +1,7 @@
 import AccordionItem from '@/components/disclosure/AccordionItem';
 import ColorPicker from '@/components/inputs/ColorPicker';
 import InputField from '@/components/inputs/InputField';
+import useDebouncedState from '@/hooks/useDebouncedState';
 import { useStore } from '@/store';
 import { ComponentRegister } from '@/store/slices/registry';
 import {
@@ -33,14 +34,23 @@ interface PropertyItemProps {
 }
 
 const PropertyItem = ({ id, tabId, propId, prop, propValue, updateProp }: PropertyItemProps) => {
+  const [displayedValue, updateDisplayedValue] = useDebouncedState(
+    propValue,
+    (v) => {
+      updateProp(propId, v);
+    },
+    200,
+    // { maxWait: 500 },
+  );
+
   const inputs: Partial<Record<ComponentPropertyType, ReactNode>> = {
     [ComponentPropertyType.TEXT]: (
       <InputField>
         <InputField.Label>{prop.name + ':'}</InputField.Label>
         <Input
           placeholder={prop.defaultValue}
-          value={propValue}
-          onChange={(e) => updateProp(propId, e.target.value)}
+          value={displayedValue}
+          onChange={(e) => updateDisplayedValue(e.target.value)}
         />
         <InputField.Caption>{prop.desc}</InputField.Caption>
       </InputField>
@@ -52,8 +62,8 @@ const PropertyItem = ({ id, tabId, propId, prop, propValue, updateProp }: Proper
           <InputField.Caption>{prop.desc}</InputField.Caption>
         </InputField.Header>
         <ColorPicker
-          value={propValue || prop.defaultValue}
-          onChange={(val) => updateProp(propId, val)}
+          value={displayedValue || prop.defaultValue}
+          onChange={(val) => updateDisplayedValue(val)}
         />
       </InputField>
     ),
