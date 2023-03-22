@@ -1,4 +1,4 @@
-import { extendTheme, StyleConfig, ThemeConfig } from '@chakra-ui/react';
+import { cssVar, extendTheme, StyleConfig, ThemeConfig } from '@chakra-ui/react';
 import { Styles } from '@chakra-ui/theme-tools';
 
 const config: ThemeConfig = {
@@ -9,13 +9,42 @@ const config: ThemeConfig = {
 const semanticTokens = {
   // It seems like extension types aren't the best right now. https://github.com/chakra-ui/chakra-ui/issues/4573 and https://github.com/chakra-ui/chakra-ui/issues/4226#issuecomment-904630320
   colors: {
-    'bf-canvas-primary': {
+    'bf-canvas-default': {
       _light: 'white',
       _dark: 'gray.900',
     },
     'bf-canvas-subtle': {
       _light: 'gray.100',
       _dark: 'gray.800',
+    },
+    'bf-fg-default': {
+      _light: 'gray.900',
+      _dark: 'gray.100',
+    },
+    'bf-fg-subtle': {
+      _light: 'gray.500',
+      _dark: 'gray.400',
+    },
+    'bf-fg-muted': {
+      _light: 'gray.600',
+      _dark: 'gray.300',
+    },
+    'bf-fg-emphasis': {
+      _light: 'white',
+      _dark: 'white',
+    },
+    'bf-border-default': {
+      _light: 'gray.200',
+      _dark: 'gray.600',
+    },
+    'bf-border-subtle': {
+      _light: 'gray.100',
+      _dark: 'gray.700',
+    },
+    // DEPRECATED COLORS (TO-BE REMOVED)
+    'bf-canvas-primary': {
+      _light: 'white',
+      _dark: 'gray.900',
     },
     'bf-bg-primary': {
       _light: 'white',
@@ -125,6 +154,16 @@ const components: Record<string, StyleConfig> = {
       },
     },
   },
+  Popover: {
+    baseStyle: {
+      content: {
+        [cssVar('popper-arrow-bg').variable]: 'colors.bf-canvas-subtle',
+        // TODO: FIX ARROW COLOR (https://github.com/chakra-ui/chakra-ui/issues/7476)
+        bg: 'bf-canvas-subtle',
+        borderColor: 'bf-border-default',
+      },
+    },
+  },
 };
 
 const styles: Styles = {
@@ -136,6 +175,7 @@ const styles: Styles = {
     body: {
       bg: 'bf-canvas-primary',
     },
+    [cssVar('popper-arrow-shadow-color').variable]: 'white',
   }),
 };
 
