@@ -1,7 +1,6 @@
 import {
   Box,
   Button,
-  IconButton,
   Popover,
   PopoverArrow,
   PopoverContent,
@@ -9,7 +8,8 @@ import {
   Portal,
   VStack,
 } from '@chakra-ui/react';
-import { HsvaColor, hsvaToHexa, Hue, Saturation } from '@uiw/react-color';
+import { Alpha, HsvaColor, hsvaToHexa, Hue, Saturation } from '@uiw/react-color';
+import SliderPointer from './SliderPointer';
 
 interface ColorPickerProps {
   value: HsvaColor;
@@ -61,27 +61,27 @@ const ColorPicker = ({ value, onChange, valueOnButton, disableAlpha }: ColorPick
                 height="12px"
                 radius={5}
                 pointer={({ left }) => (
-                  <IconButton
+                  <SliderPointer
                     left={left}
-                    top="2px"
-                    minW={0}
-                    height="20px"
-                    width="10px"
-                    transform="translate(-50%, -50%)"
-                    aria-label={''}
-                    variant="solid"
-                    bg={hsvaToHexa({ h: value.h, s: 100, v: 100, a: 1 })} //'bf-canvas-default'
-                    border={'2px'}
-                    borderColor={'bf-fg-emphasis'}
-                    _hover={{
-                      borderColor: 'bf-fg-muted',
-                      transition: 'unset',
-                    }}
-                    // _active={{ bg: 'bf-border-subtle', borderColor: 'bf-fg-subtle' }}
+                    bg={hsvaToHexa({ h: value.h, s: 100, v: 100, a: 1 })}
                   />
                 )}
               />
             </Box>
+            {!disableAlpha && (
+              <Box borderRadius={5} border={'1px'} borderColor={'bf-border-default'} width="100%">
+                <Alpha
+                  width="100%"
+                  hsva={value}
+                  onChange={(newAlpha) => {
+                    onChange({ ...value, ...newAlpha });
+                  }}
+                  height="12px"
+                  radius={5}
+                  pointer={({ left }) => <SliderPointer left={left} />}
+                />
+              </Box>
+            )}
           </VStack>
         </PopoverContent>
       </Portal>
