@@ -5,12 +5,12 @@ import {
   Flex,
   Icon,
   Progress,
-  RenderProps,
   Text,
   useDisclosure,
   useMultiStyleConfig,
+  UseToastOptions,
 } from '@chakra-ui/react';
-import { ReactNode } from 'react';
+import { ElementType, ReactNode } from 'react';
 import { IoChevronDown, IoChevronUp } from 'react-icons/io5';
 import {
   MdCheckCircleOutline,
@@ -26,13 +26,15 @@ export interface ToastProps {
   progress?: number;
 }
 
-const STATUSES = {
+const STATUSES: Record<string, { icon?: ElementType; colorScheme: string }> = {
   info: { icon: MdInfoOutline, colorScheme: 'blue' },
   warning: { icon: MdWarningAmber, colorScheme: 'orange' },
   success: { icon: MdCheckCircleOutline, colorScheme: 'green' },
   error: { icon: MdErrorOutline, colorScheme: 'red' },
   loading: { colorScheme: 'blue' },
 };
+
+type RenderProps = Parameters<NonNullable<UseToastOptions['render']>>[0];
 
 const Toast = (props: ToastProps & RenderProps) => {
   const { content, onClose, extendedContent, progress, status = 'info' } = props;
