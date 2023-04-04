@@ -30,8 +30,10 @@ const MovableTabs = () => {
 
   const [curTab, setCurTab] = useState(Object.keys(tabs)[0]);
 
-  context.set('bf:current-tab-id', curTab);
-  context.set('bf:current-tab-type', tabs[curTab].type);
+  if (curTab && tabs[curTab]) {
+    context.set('bf:current-tab-id', curTab);
+    context.set('bf:current-tab-type', tabs[curTab].type);
+  }
 
   const styles: any = useStyleConfig('Tabs');
 
@@ -41,12 +43,15 @@ const MovableTabs = () => {
   };
 
   const handleTabChange = (index: string) => {
-    setCurTab(index);
-    context.set('bf:current-tab-id', curTab);
-    context.set('bf:current-tab-type', tabs[curTab].type);
+    if (index && tabs[index]) {
+      setCurTab(index);
+      context.set('bf:current-tab-id', curTab);
+      context.set('bf:current-tab-type', tabs[curTab].type);
+    }
   };
 
-  const TabType = tabTypes[tabs[curTab].type as keyof typeof tabTypes].as;
+  const TabType =
+    curTab && tabs[curTab] ? tabTypes[tabs[curTab].type as keyof typeof tabTypes].as : undefined;
 
   return (
     <>
@@ -101,7 +106,7 @@ const MovableTabs = () => {
           })}
         </Flex>
       </Box>
-      {<TabType id={curTab} />}
+      {TabType && <TabType id={curTab} />}
     </>
   );
 };
