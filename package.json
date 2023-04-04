@@ -51,7 +51,7 @@
     "react-rnd": "^10.3.7",
     "react-virtualized": "^9.22.3",
     "xlsx": "^0.18.5",
-    "zustand": "^4.1.4"
+    "zustand": "^4.3.7"
   },
   "devDependencies": {
     "@dhmk/zustand-lens": "^2.0.5",

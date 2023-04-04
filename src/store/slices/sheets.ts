@@ -1,26 +1,9 @@
 import { lens } from '@dhmk/zustand-lens';
-import { ChartData } from 'bluefire';
+import { BluefireState, ChartData } from 'bluefire';
 
-interface State {
-  sheets: Record<string, Record<string, ChartData>>;
-}
-
-interface Actions {
-  updateChart: (
-    tab: string,
-    id: string,
-    data: ChartData | ((past: ChartData) => ChartData),
-  ) => void;
-  removeChart: (tab: string, id: string) => void;
-}
-
-const initialState: State = {
-  sheets: {},
-};
-
-export default lens<State & Actions>((set) => {
+export default lens<BluefireState['sheets']>((set) => {
   return {
-    ...initialState,
+    sheets: {},
 
     updateChart: (tab: string, id: string, data: ChartData | ((past: ChartData) => ChartData)) => {
       set((draft) => {

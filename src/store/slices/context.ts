@@ -1,21 +1,9 @@
 import { lens } from '@dhmk/zustand-lens';
+import { BluefireState } from 'bluefire';
 
-interface State {
-  state: {
-    [index: string]: string;
-  };
-}
-
-interface Actions {
-  set: (key: string, value?: string) => void;
-  satisfies: (key: string, condition?: string | ((value: string) => boolean)) => boolean;
-}
-
-const initialState: State = { state: {} };
-
-export default lens<State & Actions>((set, get) => {
+export default lens<BluefireState['context']>((set, get) => {
   return {
-    ...initialState,
+    state: {},
 
     set: (key: string, value?: string) => {
       set((draft) => {

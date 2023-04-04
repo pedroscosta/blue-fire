@@ -1,46 +1,13 @@
-import DataTab from '@/tabs/data';
-import SheetTab from '@/tabs/sheet';
 import { lens } from '@dhmk/zustand-lens';
-import { nanoid } from 'nanoid';
-import { ElementType } from 'react';
+import { BluefireState } from 'bluefire';
 
-interface State {
-  tabTypes: {
-    [index: string]: { name: string; as: ElementType };
-  };
-  fixedTabs: string[];
-  openableTabs: string[];
-  movableTabs: string[];
-  tabs: {
-    [index: string]: { name: string; type: string };
-  };
-}
-
-const nid = nanoid();
-const nid2 = nanoid();
-
-const initialState: State = {
-  tabTypes: {
-    'bf:data-tab': { name: 'Data', as: DataTab as ElementType },
-    'bf:sheet-tab': { name: 'Sheet', as: SheetTab as ElementType },
-  },
-  fixedTabs: ['bf:data-tab'],
-  openableTabs: ['bf:sheet-tab'],
-  movableTabs: [nid, nid2],
-  tabs: {
-    'bf:data-tab': { name: 'Data', type: 'bf:data-tab' },
-    [nid]: { name: 'Sheet 1', type: 'bf:sheet-tab' },
-    [nid2]: { name: 'Sheet 2', type: 'bf:sheet-tab' },
-  },
-};
-
-interface Actions {
-  moveTab: (draggedIndex: number, targetIndex: number) => void;
-}
-
-export default lens<State & Actions>((set) => {
+export default lens<BluefireState['tabs']>((set) => {
   return {
-    ...initialState,
+    tabTypes: {},
+    fixedTabs: [],
+    openableTabs: [],
+    movableTabs: [],
+    tabs: {},
 
     moveTab: (draggedIndex: number, targetIndex: number) => {
       set((draft) => {

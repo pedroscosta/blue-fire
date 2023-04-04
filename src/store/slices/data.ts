@@ -1,53 +1,18 @@
 import { lens } from '@dhmk/zustand-lens';
+import { BluefireState, DataSource, LoadedData } from 'bluefire';
 
-export interface DataSource {
-  location: string;
-  columns: string[];
-}
-
-export interface DagData {
-  [index: string]: { top: number; left: number };
-}
-
-export interface LoadedData {
-  fields: Record<string, string>;
-  tables: Record<string, any>; // TODO: Add a precise type for table object
-}
-
-interface State {
-  dataSources: { [index: string]: DataSource };
-  dataModel: {
-    dag: DagData;
-    connections: { [index: string]: string };
-  };
-  loadedState: LoadedData & {
-    filters: any[]; // TODO: Add a precise type for filter object
-  };
-}
-
-const initialState: State = {
-  dataSources: {},
-  dataModel: {
-    dag: {},
-    connections: {},
-  },
-  loadedState: {
-    fields: {},
-    tables: {},
-    filters: [],
-  },
-};
-
-interface Actions {
-  createDataSource: (name: string, source: DataSource) => void;
-  removeDataSource: (name: string) => void;
-  setDagData: (data: { [index: string]: { top: number; left: number } }) => void;
-  loadData: (data: LoadedData) => void;
-}
-
-export default lens<State & Actions>((set) => {
+export default lens<BluefireState['data']>((set) => {
   return {
-    ...initialState,
+    dataSources: {},
+    dataModel: {
+      dag: {},
+      connections: {},
+    },
+    loadedState: {
+      fields: {},
+      tables: {},
+      filters: [],
+    },
 
     createDataSource: (name: string, source: DataSource) => {
       set((draft) => {
