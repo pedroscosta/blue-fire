@@ -1,7 +1,7 @@
 import { nanoid } from 'nanoid';
 import { ElementType } from 'react';
-import type { Mutate, StoreApi, UseBoundStore } from 'zustand';
-import { devtools } from 'zustand/middleware';
+import { create } from 'zustand';
+import { devtools, subscribeWithSelector } from 'zustand/middleware';
 import { immer } from 'zustand/middleware/immer';
 
 /*---------------------------------------------------------------------------------------------
@@ -165,16 +165,11 @@ export interface BluefireState {
   };
 }
 
-// This is to keep the imports from being removed.
+const _store = create<BluefireState>()(
+  devtools(subscribeWithSelector(immer((set) => ({} as BluefireState)))),
+); // TODO: Make this type without creating this store (https://github.com/pmndrs/zustand/discussions/1454).
 
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
-type Immer = typeof immer;
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
-type Devtools = typeof devtools;
-
-export type BluefireStore = UseBoundStore<
-  Mutate<StoreApi<BluefireState>, [['zustand/immer', never], ['zustand/devtools', never]]>
->;
+export type BluefireStore = typeof _store;
 
 /*---------------------------------------------------------------------------------------------
  *
@@ -214,6 +209,9 @@ const charts = {
   },
 };
 
-const store: BluefireStore = (window as any).BluefireStore;
+const getStore: () => Pick<BluefireStore, 'getState' | 'subscribe'> = () => ({
+  getState: ((window as any).BluefireStore as BluefireStore).getState,
+  subscribe: ((window as any).BluefireStore as BluefireStore).subscribe,
+});
 
-export { charts, store };
+export { charts, getStore };
