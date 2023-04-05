@@ -1,14 +1,10 @@
+import { hsvaToHexa } from '@uiw/color-convert';
 import { curveBasis } from '@visx/curve';
 import { scaleLinear } from '@visx/scale';
 import { LinePath } from '@visx/shape';
-import { ComponentPropertiesRegister, ComponentPropertyType } from 'bluefire';
-
-interface ChartProps {
-  width: number;
-  height: number;
-  id: string;
-  tabId: string;
-}
+import { ComponentPropertiesRegister, ComponentPropertyType, getStore } from 'bluefire';
+import { useEffect, useState } from 'react';
+import { ChartProps } from '../main';
 
 const data = [
   { x: 10, y: 20 },
@@ -34,9 +30,22 @@ const yScale = scaleLinear<number>({
   domain: [0, 50],
 });
 
-const LineChart = ({ width, height }: ChartProps) => {
+const LineChart = ({ width, height, id, tabId, compId }: ChartProps) => {
+  const [compProps, setCompProps] = useState<any>();
+
+  useEffect(
+    () =>
+      getStore().subscribe(
+        (s) => s.sheets.sheets[tabId][id]?.components[compId]?.props, //
+        (props) => setCompProps(props),
+      ),
+    [],
+  );
+
   xScale.range([0, width]);
   yScale.range([0, height]);
+
+  // console.log(compProps, tabId, id, compId);
 
   return (
     <LinePath<LineData>
@@ -44,7 +53,7 @@ const LineChart = ({ width, height }: ChartProps) => {
       data={data}
       x={(d) => xScale(getX(d)) ?? 0}
       y={(d) => yScale(getY(d)) ?? 0}
-      stroke="red"
+      stroke={compProps?.['line-color'] ? hsvaToHexa(compProps['line-color']) : undefined}
       strokeWidth={4}
       strokeOpacity={1}
       shapeRendering="geometricPrecision"

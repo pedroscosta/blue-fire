@@ -48,6 +48,7 @@ const BaseChart = ({ tabId, id }: { tabId: string; id: string }) => {
                     height={parent.height}
                     id={id}
                     tabId={tabId}
+                    compId={k}
                   />
                 );
               })}
