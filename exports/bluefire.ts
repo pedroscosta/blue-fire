@@ -1,3 +1,4 @@
+import * as convert from '@uiw/color-convert';
 import { nanoid } from 'nanoid';
 import { ElementType } from 'react';
 import { create } from 'zustand';
@@ -209,9 +210,25 @@ const charts = {
   },
 };
 
+const colors = {
+  getNamedColor: (col: string, includeVar = false) => {
+    const val = `--chakra-colors-${col.replaceAll('.', '-')}`;
+    return includeVar ? `var(${val})` : val;
+  },
+  getCssVar: (col: string) => {
+    return window
+      .getComputedStyle(document.body)
+      .getPropertyValue(col.startsWith('--') ? col : colors.getNamedColor(col));
+  },
+  safeHsvaToHexa: (col: convert.HsvaColor | string) => {
+    return typeof col === 'string' ? col : convert.hsvaToHexa(col);
+  },
+  ...convert,
+};
+
 const getStore: () => Pick<BluefireStore, 'getState' | 'subscribe'> = () => ({
   getState: ((window as any).BluefireStore as BluefireStore).getState,
   subscribe: ((window as any).BluefireStore as BluefireStore).subscribe,
 });
 
-export { charts, getStore };
+export { charts, getStore, colors };
