@@ -1,8 +1,7 @@
-import { hsvaToHexa } from '@uiw/color-convert';
 import { curveBasis } from '@visx/curve';
 import { scaleLinear } from '@visx/scale';
 import { LinePath } from '@visx/shape';
-import { ComponentPropertiesRegister, ComponentPropertyType, getStore } from 'bluefire';
+import { colors, ComponentPropertiesRegister, ComponentPropertyType, getStore } from 'bluefire';
 import { useEffect, useState } from 'react';
 import { ChartProps } from '../main';
 
@@ -45,15 +44,17 @@ const LineChart = ({ width, height, id, tabId, compId }: ChartProps) => {
   xScale.range([0, width]);
   yScale.range([0, height]);
 
-  // console.log(compProps, tabId, id, compId);
-
   return (
     <LinePath<LineData>
       curve={curveBasis}
       data={data}
       x={(d) => xScale(getX(d)) ?? 0}
       y={(d) => yScale(getY(d)) ?? 0}
-      stroke={compProps?.['line-color'] ? hsvaToHexa(compProps['line-color']) : undefined}
+      stroke={
+        compProps?.['line-color']
+          ? colors.safeHsvaToHexa(compProps['line-color'])
+          : colors.getNamedColor(defaultProps['line-color'], true)
+      }
       strokeWidth={4}
       strokeOpacity={1}
       shapeRendering="geometricPrecision"
@@ -62,6 +63,10 @@ const LineChart = ({ width, height, id, tabId, compId }: ChartProps) => {
 };
 
 export default LineChart;
+
+const defaultProps = {
+  'line-color': 'blue.400',
+};
 
 export const LineChartProps: ComponentPropertiesRegister = {
   appearance: {
@@ -74,7 +79,7 @@ export const LineChartProps: ComponentPropertiesRegister = {
             name: 'Color',
             desc: 'Line color',
             type: ComponentPropertyType.COLOR,
-            defaultValue: 'blue.400',
+            defaultValue: defaultProps['line-color'],
           },
         },
       },

@@ -38,7 +38,8 @@
     "settings",
     "workspace",
     "main",
-    "theme"
+    "theme",
+    "charts"
   ],
   "typescript.tsdk": "node_modules\\typescript\\lib"
 }

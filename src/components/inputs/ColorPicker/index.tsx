@@ -8,18 +8,24 @@ import {
   Portal,
   VStack,
 } from '@chakra-ui/react';
-import { Alpha, HsvaColor, hsvaToHexa, Hue, Saturation } from '@uiw/react-color';
+import { Alpha, hexToHsva, HsvaColor, hsvaToHexa, Hue, Saturation } from '@uiw/react-color';
+import { colors } from 'bluefire';
 import SliderPointer from './SliderPointer';
 
 interface ColorPickerProps {
-  value: HsvaColor;
-  onChange: (val: HsvaColor) => void;
+  value: HsvaColor | string;
+  onChange: (val: HsvaColor | string) => void;
   valueOnButton?: boolean;
   disableAlpha?: boolean;
 }
 
 const ColorPicker = ({ value, onChange, valueOnButton, disableAlpha }: ColorPickerProps) => {
-  const hexaValue = hsvaToHexa(value);
+  console.log(value);
+  const hsvaValue =
+    typeof value === 'string'
+      ? hexToHsva(value.startsWith('#') ? value : colors.getCssVar(value))
+      : value;
+  const hexaValue = hsvaToHexa(hsvaValue);
 
   return (
     <Popover
@@ -44,7 +50,7 @@ const ColorPicker = ({ value, onChange, valueOnButton, disableAlpha }: ColorPick
           <VStack spacing={2}>
             <Box borderRadius={5} border={'1px'} borderColor={'bf-border-default'}>
               <Saturation
-                hsva={value}
+                hsva={hsvaValue}
                 onChange={(color) => {
                   onChange(color);
                 }}
@@ -54,16 +60,16 @@ const ColorPicker = ({ value, onChange, valueOnButton, disableAlpha }: ColorPick
             <Box borderRadius={5} border={'1px'} borderColor={'bf-border-default'} width="100%">
               <Hue
                 width="100%"
-                hue={value.h}
+                hue={hsvaValue.h}
                 onChange={(newHue) => {
-                  onChange({ ...value, ...newHue });
+                  onChange({ ...hsvaValue, ...newHue });
                 }}
                 height="12px"
                 radius={5}
                 pointer={({ left }) => (
                   <SliderPointer
                     left={left}
-                    bg={hsvaToHexa({ h: value.h, s: 100, v: 100, a: 1 })}
+                    bg={hsvaToHexa({ h: hsvaValue.h, s: 100, v: 100, a: 1 })}
                   />
                 )}
               />
@@ -72,9 +78,9 @@ const ColorPicker = ({ value, onChange, valueOnButton, disableAlpha }: ColorPick
               <Box borderRadius={5} border={'1px'} borderColor={'bf-border-default'} width="100%">
                 <Alpha
                   width="100%"
-                  hsva={value}
+                  hsva={hsvaValue}
                   onChange={(newAlpha) => {
-                    onChange({ ...value, ...newAlpha });
+                    onChange({ ...hsvaValue, ...newAlpha });
                   }}
                   height="12px"
                   radius={5}

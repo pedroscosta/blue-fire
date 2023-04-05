@@ -3,7 +3,6 @@ import ColorPicker from '@/components/inputs/ColorPicker';
 import InputField from '@/components/inputs/InputField';
 import useDebouncedState from '@/hooks/useDebouncedState';
 import { useStore } from '@/store';
-import { ComponentRegister } from '@/store/slices/registry';
 import {
   Accordion,
   Box,
@@ -18,7 +17,7 @@ import {
   Text,
   VStack,
 } from '@chakra-ui/react';
-import { ComponentProperty, ComponentPropertyType } from 'bluefire';
+import { ComponentProperty, ComponentPropertyType, ComponentRegister } from 'bluefire';
 import produce from 'immer';
 import { ReactNode, useState } from 'react';
 import { MdExpandLess, MdExpandMore } from 'react-icons/md';
