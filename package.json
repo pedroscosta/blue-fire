@@ -26,8 +26,8 @@
     "dist": "tsc && vite build && electron-builder",
     "lint": "eslint . --ext .js,.jsx,.ts,.tsx",
     "extensions:run_all": "node run_all.js",
-    "extensions:install": "for D in ./src/internal_extensions/[!_]*/; do yarn --cwd \"${D}\"; done",
-    "extensions:build": "for D in ./src/internal_extensions/[!_]*/; do yarn --cwd \"${D}\" build; done",
+    "extensions:install": "node run_all.js install",
+    "extensions:build": "node run_all.js build",
     "exports:build": "tsc -p ./exports/",
     "exports:watch": "tsc -w -p ./exports/"
   },
