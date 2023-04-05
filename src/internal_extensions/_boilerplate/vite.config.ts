@@ -9,6 +9,9 @@ export default defineConfig({
     react(),
     viteExternalsPlugin({
       bluefire: 'Bluefire',
+      react: 'React',
+      'react-dom': 'ReactDOM',
+      'react-dom/client': 'ReactDOM',
     }),
   ],
   define: {

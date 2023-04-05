@@ -9,6 +9,8 @@ import initialState from './store/initialState';
 
 (window as any).Bluefire = bf; // TODO: Make a better way to map this
 (window as any).BluefireStore = useStore;
+(window as any).React = React;
+(window as any).ReactDOM = ReactDOM;
 
 if (!useStore.getState().primed)
   useStore.setState((s: any) => merge(s, initialState, { primed: true }));
