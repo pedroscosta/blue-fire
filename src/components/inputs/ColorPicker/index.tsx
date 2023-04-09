@@ -20,7 +20,6 @@ interface ColorPickerProps {
 }
 
 const ColorPicker = ({ value, onChange, valueOnButton, disableAlpha }: ColorPickerProps) => {
-  console.log(value);
   const hsvaValue =
     typeof value === 'string'
       ? hexToHsva(value.startsWith('#') ? value : colors.getCssVar(value))

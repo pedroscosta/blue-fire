@@ -3,6 +3,7 @@ import ColorPicker from '@/components/inputs/ColorPicker';
 import InputField from '@/components/inputs/InputField';
 import useDebouncedState from '@/hooks/useDebouncedState';
 import { useStore } from '@/store';
+import { genericTypeGuard } from '@/utils/types';
 import {
   Accordion,
   Box,
@@ -14,6 +15,11 @@ import {
   MenuButton,
   MenuItem,
   MenuList,
+  NumberDecrementStepper,
+  NumberIncrementStepper,
+  NumberInput,
+  NumberInputField,
+  NumberInputStepper,
   Text,
   VStack,
 } from '@chakra-ui/react';
@@ -39,7 +45,6 @@ const PropertyItem = ({ id, tabId, propId, prop, propValue, updateProp }: Proper
       updateProp(propId, v);
     },
     200,
-    // { maxWait: 500 },
   );
 
   const inputs: Partial<Record<ComponentPropertyType, ReactNode>> = {
@@ -48,8 +53,8 @@ const PropertyItem = ({ id, tabId, propId, prop, propValue, updateProp }: Proper
         <InputField.Label>{prop.name + ':'}</InputField.Label>
         <Input
           placeholder={prop.defaultValue}
-          value={displayedValue}
-          onChange={(e) => updateDisplayedValue(e.target.value)}
+          value={propValue}
+          onChange={(e) => updateProp(propId, e.target.value)}
         />
         <InputField.Caption>{prop.desc}</InputField.Caption>
       </InputField>
@@ -64,6 +69,32 @@ const PropertyItem = ({ id, tabId, propId, prop, propValue, updateProp }: Proper
           value={displayedValue || prop.defaultValue}
           onChange={(val) => updateDisplayedValue(val)}
         />
+      </InputField>
+    ),
+    [ComponentPropertyType.NUMBER]: (
+      <InputField inline>
+        <InputField.Header>
+          <InputField.Label>{prop.name + ':'}</InputField.Label>
+          <InputField.Caption>{prop.desc}</InputField.Caption>
+        </InputField.Header>
+        <NumberInput
+          defaultValue={prop.defaultValue}
+          min={genericTypeGuard(prop.inputProps?.['min'], 'number')}
+          max={genericTypeGuard(prop.inputProps?.['max'], 'number')}
+          step={genericTypeGuard(prop.inputProps?.['step'], 'number')}
+          precision={genericTypeGuard(prop.inputProps?.['precision'], 'number')}
+          w="50%"
+          value={propValue}
+          onChange={(valueString) => {
+            updateProp(propId, Number(valueString));
+          }}
+        >
+          <NumberInputField />
+          <NumberInputStepper>
+            <NumberIncrementStepper />
+            <NumberDecrementStepper />
+          </NumberInputStepper>
+        </NumberInput>
       </InputField>
     ),
   };
