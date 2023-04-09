@@ -41,7 +41,7 @@ export interface PanelData {
 export enum ComponentPropertyType {
   TEXT,
   BOOLEAN,
-  OPTIONS,
+  SELECT,
   NUMBER,
   COLOR,
   MULTI_BOOLEAN,
@@ -50,10 +50,11 @@ export enum ComponentPropertyType {
 
 export interface ComponentProperty {
   type: ComponentPropertyType;
-  options?: string[];
-  defaultValue?: any;
   name: string;
   desc: string;
+  defaultValue?: any;
+  options?: string[];
+  inputProps?: Record<string, string | number | boolean>;
 }
 
 // Data slice
