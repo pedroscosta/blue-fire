@@ -1,6 +1,7 @@
 import AccordionItem from '@/components/disclosure/AccordionItem';
 import ColorPicker from '@/components/inputs/ColorPicker';
 import InputField from '@/components/inputs/InputField';
+import Select from '@/components/inputs/Select';
 import useDebouncedState from '@/hooks/useDebouncedState';
 import { useStore } from '@/store';
 import { genericTypeGuard } from '@/utils/types';
@@ -83,7 +84,7 @@ const PropertyItem = ({ id, tabId, propId, prop, propValue, updateProp }: Proper
           max={genericTypeGuard(prop.inputProps?.['max'], 'number')}
           step={genericTypeGuard(prop.inputProps?.['step'], 'number')}
           precision={genericTypeGuard(prop.inputProps?.['precision'], 'number')}
-          w="50%"
+          w="60%"
           value={propValue}
           onChange={(valueString) => {
             updateProp(propId, Number(valueString));
@@ -95,6 +96,25 @@ const PropertyItem = ({ id, tabId, propId, prop, propValue, updateProp }: Proper
             <NumberDecrementStepper />
           </NumberInputStepper>
         </NumberInput>
+      </InputField>
+    ),
+    [ComponentPropertyType.SELECT]: (
+      <InputField inline>
+        <InputField.Header>
+          <InputField.Label>{prop.name + ':'}</InputField.Label>
+          <InputField.Caption>{prop.desc}</InputField.Caption>
+        </InputField.Header>
+        {/* <Input
+          placeholder={prop.defaultValue}
+          value={propValue}
+          onChange={(e) => updateProp(propId, e.target.value)}
+        /> */}
+        <Select
+          options={prop.options || []}
+          value={propValue || prop.defaultValue}
+          onChange={(i) => updateProp(propId, i)}
+          containerProps={{ w: '60%' }}
+        />
       </InputField>
     ),
   };

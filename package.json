@@ -41,6 +41,7 @@
     "@react-spring/web": "^9.7.1",
     "@uiw/react-color": "^1.1.2",
     "@visx/visx": "^2.17.0",
+    "chakra-react-select": "^4.6.0",
     "chakra-ui-contextmenu": "^1.0.5",
     "frameless-titlebar": "^2.1.4",
     "framer-motion": "^7.6.7",
