@@ -28,48 +28,6 @@ const Select = ({
     label: opt,
   }));
 
-  // return (
-  //   <Menu
-  //     isLazy={false}
-  //     matchWidth={matchWidth}
-  //     initialFocusRef={focus}
-  //     boundary="scrollParent"
-  //     onOpen={() => {
-  //       setTimeout(() => {
-  //         console.log(focus.current?.textContent);
-  //         focus.current?.focus();
-  //       }, 0);
-  //     }}
-  //   >
-  //     {({ isOpen }) => (
-  //       <>
-  //         <MenuButton
-  //           isActive={isOpen}
-  //           as={Button}
-  //           rightIcon={isOpen ? <MdExpandLess /> : <MdExpandMore />}
-  //           {...{ variant: 'outline', ...buttonProps }}
-  //         >
-  //           {options[useValue]}
-  //         </MenuButton>
-  //         <MenuList sx={{ overflowY: 'auto' }} maxH={64} minW={0}>
-  //           {options.map((v, k) => (
-  //             <MenuItem
-  //               key={k}
-  //               onClick={() => {
-  //                 onChange && onChange(k, v);
-  //                 setInternalValue(k);
-  //               }}
-  //               ref={k == useValue ? focus : undefined}
-  //             >
-  //               {v}
-  //             </MenuItem>
-  //           ))}
-  //         </MenuList>
-  //       </>
-  //     )}
-  //   </Menu>
-  // );
-
   return (
     <RCS<Option>
       name="colors"
