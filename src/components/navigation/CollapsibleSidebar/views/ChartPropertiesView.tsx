@@ -21,6 +21,7 @@ import {
   NumberInput,
   NumberInputField,
   NumberInputStepper,
+  Switch,
   Text,
   VStack,
 } from '@chakra-ui/react';
@@ -104,17 +105,21 @@ const PropertyItem = ({ id, tabId, propId, prop, propValue, updateProp }: Proper
           <InputField.Label>{prop.name + ':'}</InputField.Label>
           <InputField.Caption>{prop.desc}</InputField.Caption>
         </InputField.Header>
-        {/* <Input
-          placeholder={prop.defaultValue}
-          value={propValue}
-          onChange={(e) => updateProp(propId, e.target.value)}
-        /> */}
         <Select
           options={prop.options || []}
           value={propValue || prop.defaultValue}
           onChange={(i) => updateProp(propId, i)}
           containerProps={{ w: '60%' }}
         />
+      </InputField>
+    ),
+    [ComponentPropertyType.BOOLEAN]: (
+      <InputField inline>
+        <InputField.Header>
+          <InputField.Label>{prop.name + ':'}</InputField.Label>
+          <InputField.Caption>{prop.desc}</InputField.Caption>
+        </InputField.Header>
+        <Switch isChecked={propValue} onChange={(e) => updateProp(propId, e.target.checked)} />
       </InputField>
     ),
   };
