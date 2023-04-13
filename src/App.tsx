@@ -4,7 +4,7 @@ import { HTML5Backend } from 'react-dnd-html5-backend';
 import './App.css';
 import CustomTitlebar from './components/navigation/CustomTitlebar';
 import MovableTabs from './components/navigation/MovableTabs';
-import Theme from './Theme';
+import Theme from './theme';
 
 const loadExtensions = async () => {
   const exts = await ipcBridge.getActiveExtensions();
