@@ -21,10 +21,15 @@ export enum DataType {
   CATEGORY,
 }
 
+export type DataProperty = { name: string; query: string; type: DataType };
+
 export interface ChartData {
   panelData: PanelData;
   baseType: string;
-  series: Record<string, { col: string; type: DataType }>;
+  data: {
+    dimensions: DataProperty[];
+    measures: DataProperty[];
+  };
   components: Record<string, { component: string; props: any }>;
 }
 
@@ -157,6 +162,7 @@ export interface BluefireState {
       id: string,
       data: ChartData | ((past: ChartData) => ChartData),
     ) => void;
+    modifyChart: (tab: string, id: string, producer: (draft: ChartData) => void) => void;
     removeChart: (tab: string, id: string) => void;
   };
   chartProps: {
