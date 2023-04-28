@@ -1,6 +1,7 @@
 import { cssVar, extendTheme, StyleConfig, ThemeConfig } from '@chakra-ui/react';
 import { Styles } from '@chakra-ui/theme-tools';
 import colors from './colors';
+import Components from './components';
 import semanticTokens from './semanticTokens';
 
 const config: ThemeConfig = {
@@ -103,6 +104,7 @@ const components: Record<string, StyleConfig> = {
       },
     },
   },
+  ...Components,
 };
 
 const styles: Styles = {
@@ -115,6 +117,7 @@ const styles: Styles = {
       bg: 'bf-canvas-primary',
     },
     [cssVar('popper-arrow-shadow-color').variable]: 'white',
+    '*': { borderColor: 'border.default' },
   }),
 };
 

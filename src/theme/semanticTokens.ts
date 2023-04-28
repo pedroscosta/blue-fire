@@ -36,35 +36,35 @@ export const tokensFromColors = (tokenMap: TokenMap, colors: Colors, prefix = ''
 export default merge(
   {
     colors: {
-      'canvas-default': {
+      'canvas.default': {
         _light: 'white',
         _dark: 'gray.900',
       },
-      'canvas-subtle': {
+      'canvas.subtle': {
         _light: 'gray.100',
         _dark: 'gray.800',
       },
-      'fg-default': {
+      'fg.default': {
         _light: 'gray.900',
         _dark: 'gray.100',
       },
-      'fg-subtle': {
+      'fg.subtle': {
         _light: 'gray.500',
         _dark: 'gray.400',
       },
-      'fg-muted': {
+      'fg.muted': {
         _light: 'gray.600',
         _dark: 'gray.300',
       },
-      'fg-emphasis': {
+      'fg.emphasis': {
         _light: 'white',
         _dark: 'white',
       },
-      'border-default': {
+      'border.default': {
         _light: 'gray.200',
         _dark: 'gray.600',
       },
-      'border-subtle': {
+      'border.subtle': {
         _light: 'gray.100',
         _dark: 'gray.700',
       },
