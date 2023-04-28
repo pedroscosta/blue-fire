@@ -14,6 +14,14 @@ export default lens<BluefireState['sheets']>((set) => {
       });
     },
 
+    modifyChart: (tab: string, id: string, producer: (past: ChartData) => void) => {
+      set((draft) => {
+        if (!draft.sheets[tab]) draft.sheets[tab] = {};
+
+        producer(draft.sheets[tab][id]);
+      });
+    },
+
     removeChart: (tab: string, id: string) => {
       set((draft) => {
         delete draft.sheets[tab]?.[id];
