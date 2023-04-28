@@ -1,28 +1,34 @@
 import {
   AccordionButton,
+  AccordionButtonProps,
   AccordionIcon,
   AccordionItem,
+  AccordionItemProps,
   AccordionPanel,
   AccordionPanelProps,
-  Box,
+  Spacer,
 } from '@chakra-ui/react';
 import { ReactNode } from 'react';
 
-interface WrapperProps {
+interface WrapperProps extends AccordionItemProps {
   title: string;
   children: ReactNode;
-  pl?: number;
-  pr?: number;
+  buttonProps?: AccordionButtonProps;
   panelProps?: AccordionPanelProps;
 }
 
-const AccordionItemWrapper = ({ children, title, pl, pr, panelProps }: WrapperProps) => {
+const AccordionItemWrapper = ({
+  children,
+  title,
+  panelProps,
+  buttonProps,
+  ...rest
+}: WrapperProps) => {
   return (
-    <AccordionItem>
-      <AccordionButton>
-        <Box as="span" flex="1" textAlign="left" pl={pl} pr={pr}>
-          {title}
-        </Box>
+    <AccordionItem {...rest}>
+      <AccordionButton {...buttonProps}>
+        {title}
+        <Spacer />
         <AccordionIcon />
       </AccordionButton>
       <AccordionPanel {...panelProps}>{children}</AccordionPanel>
