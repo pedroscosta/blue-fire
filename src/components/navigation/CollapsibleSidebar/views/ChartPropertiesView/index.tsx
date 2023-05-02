@@ -38,15 +38,13 @@ import shallow from 'zustand/shallow';
 import DataSelector from './DataSelector';
 
 interface PropertyItemProps {
-  id: string;
-  tabId: string;
   propId: string;
   prop: ComponentProperty;
   propValue: any;
   updateProp: (propId: string, value: any) => void;
 }
 
-const PropertyItem = ({ id, tabId, propId, prop, propValue, updateProp }: PropertyItemProps) => {
+const PropertyItem = ({ propId, prop, propValue, updateProp }: PropertyItemProps) => {
   const [displayedValue, updateDisplayedValue] = useDebouncedState(
     propValue,
     (v) => {
@@ -141,6 +139,7 @@ const PropertyItem = ({ id, tabId, propId, prop, propValue, updateProp }: Proper
   return <>{Element}</>;
 };
 
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 const SingleValue = ({ children, ...props }: SingleValueProps<Option>) => (
   <chakraComponents.SingleValue {...props}>
     <Breadcrumb
@@ -235,6 +234,11 @@ const ChartsPropertiesView = () => {
               data={chartData.data.dimensions}
               updateDataProps={updateDataProps}
             />
+            <DataSelector
+              type="measures"
+              data={chartData.data.measures}
+              updateDataProps={updateDataProps}
+            />
           </TabPanel>
           <TabPanel w="100%" p="0" paddingTop={2}>
             <Accordion allowToggle w="100%">
@@ -255,8 +259,6 @@ const ChartsPropertiesView = () => {
                           {Object.entries(groupId.properties).map(([propId, prop]) => (
                             <Box w="100%" key={propId}>
                               <PropertyItem
-                                id={id}
-                                tabId={tabId}
                                 propId={propId}
                                 prop={prop}
                                 propValue={chartComps[curScope].props[propId]}
