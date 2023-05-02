@@ -1,3 +1,4 @@
+import ChartError from '@/components/feedback/ChartError';
 import { useStore } from '@/store';
 import {
   Box,
@@ -12,6 +13,7 @@ import {
 } from '@chakra-ui/react';
 import { ParentSize } from '@visx/responsive';
 import { AnyD3Scale } from '@visx/scale';
+import { ChartComponent } from 'bluefire';
 import { MdDeleteOutline, MdMoreVert } from 'react-icons/md';
 import shallow from 'zustand/shallow';
 import ChartContext from './context';
@@ -26,6 +28,21 @@ const BaseChart = ({ tabId, id }: { tabId: string; id: string }) => {
     series[id] = scale;
   };
 
+  for (const [k, v] of Object.entries(data.components)) {
+    const validator = (registry.components['bf:chart-components'][v.component] as ChartComponent)
+      ?.data?.validation;
+
+    console.log(registry.components['bf:chart-components'][v.component]);
+
+    if (validator) {
+      const response = validator(data.data, data.components[v.component]?.props);
+
+      console.log(response);
+
+      return <ChartError {...response} />;
+    }
+  }
+
   return (
     <ChartContext.Provider value={{ series, setSeries }}>
       <Text fontSize={'lg'} fontWeight={'semibold'} paddingLeft={2}>
@@ -38,6 +55,7 @@ const BaseChart = ({ tabId, id }: { tabId: string; id: string }) => {
             <svg width={parent.width} height={parent.height}>
               {Object.entries(data.components).map(([k, v]) => {
                 const Element = registry.components['bf:chart-components'][v.component]?.component;
+                const props = data.components[v.component]?.props;
 
                 if (!Element) return;
 
@@ -49,6 +67,9 @@ const BaseChart = ({ tabId, id }: { tabId: string; id: string }) => {
                     id={id}
                     tabId={tabId}
                     compId={k}
+                    props={props || {}}
+                    data={data.data}
+                    ErrorElement={ChartError}
                   />
                 );
               })}
