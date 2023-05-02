@@ -1,3 +1,4 @@
+import { AlertStatus } from '@chakra-ui/react';
 import * as convert from '@uiw/color-convert';
 import { nanoid } from 'nanoid';
 import { ElementType } from 'react';
@@ -103,7 +104,9 @@ export interface ChartComponent extends ComponentRegister {
   data: {
     name: string;
     startingData: Partial<ChartData>;
+    baseType: string;
     type: ChartComponentType;
+    validation?: ChartComponentErrorCheck;
     icon?: ElementType;
   };
 }
@@ -173,6 +176,27 @@ export interface BluefireState {
   };
 }
 
+// Chart components props
+
+export type ChartComponentProps = {
+  width: number;
+  height: number;
+  id: string;
+  tabId: string;
+  compId: string;
+  data: ChartData['data'];
+  props: any;
+};
+
+// Chart error detection function
+
+export type ChartComponentErrorCheck = (
+  data: ChartData['data'],
+  props: any,
+) =>
+  | { title?: string | React.ReactNode; message?: string | React.ReactNode; status?: AlertStatus }
+  | undefined;
+
 const _store = create<BluefireState>()(
   devtools(subscribeWithSelector(immer((set) => ({} as BluefireState)))),
 ); // TODO: Make this type without creating this store (https://github.com/pmndrs/zustand/discussions/1454).
@@ -195,22 +219,24 @@ const charts = {
     });
   },
 
-  registerComponent: (
-    id: string,
-    name: string,
-    component: ElementType,
-    type: ChartComponentType,
-    baseType: string,
-    icon?: ElementType,
-    props?: ComponentPropertiesRegister,
-  ) => {
+  registerComponent: (data: {
+    id: string;
+    name: string;
+    component: ElementType;
+    type: ChartComponentType;
+    baseType: string;
+    icon?: ElementType;
+    props?: ComponentPropertiesRegister;
+    validation?: ChartComponentErrorCheck;
+  }) => {
+    const { id, name, component, type, baseType, icon, props, validation } = data;
     const startingData: Partial<ChartData> = {
       components: { [nanoid()]: { component: id, props: {} } },
     };
 
     getState().registry.register('bf:chart-components', id, {
       component,
-      data: { name, type, icon, startingData },
+      data: { name, type, icon, startingData, baseType, validation },
     });
 
     getState().chartProps.registerProps(id, props);
