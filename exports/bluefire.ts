@@ -34,6 +34,11 @@ export interface ChartData {
   components: Record<string, { component: string; props: any }>;
 }
 
+export type QueriedChartData = {
+  dimensions: any[][];
+  measures: any[][];
+};
+
 // Chart Properties
 
 export interface PanelData {
@@ -138,6 +143,7 @@ export interface BluefireState {
     removeDataSource: (name: string) => void;
     setDagData: (data: Record<string, { top: number; left: number }>) => void;
     loadData: (data: LoadedData) => void;
+    queryColumn: (col: string) => any[] | undefined;
   };
   context: {
     // State
@@ -184,14 +190,15 @@ export type ChartComponentProps = {
   id: string;
   tabId: string;
   compId: string;
-  data: ChartData['data'];
+  data: QueriedChartData;
+  dataProps: ChartData['data'];
   props: any;
 };
 
 // Chart error detection function
 
 export type ChartComponentErrorCheck = (
-  data: ChartData['data'],
+  data: QueriedChartData,
   props: any,
 ) =>
   | { title?: string | React.ReactNode; message?: string | React.ReactNode; status?: AlertStatus }
