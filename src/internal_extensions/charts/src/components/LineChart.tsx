@@ -1,5 +1,5 @@
 import * as xCurves from '@visx/curve';
-import { scaleLinear } from '@visx/scale';
+import { scaleBand, scaleLinear } from '@visx/scale';
 import { LinePath } from '@visx/shape';
 import {
   ChartComponentErrorCheck,
@@ -8,6 +8,7 @@ import {
   ComponentPropertiesRegister,
   ComponentPropertyType,
 } from 'bluefire';
+import { max, min, zipWith } from 'lodash';
 
 const curves = {
   Basis: xCurves.curveBasis,
@@ -41,44 +42,40 @@ const _data = [
 type ArrayElement<ArrayType extends readonly unknown[]> =
   ArrayType extends readonly (infer ElementType)[] ? ElementType : never;
 
-type LineData = ArrayElement<typeof _data>;
-
 // data accessors
 const getX = (d: any) => d.x;
 const getY = (d: any) => d.y;
 
 // scales
-const xScale = scaleLinear<number>({
-  domain: [0, 70],
-});
+const xScale = scaleBand<string>({});
 
-const yScale = scaleLinear<number>({
-  domain: [0, 50],
-});
+const yScale = scaleLinear<number>({});
 
-const LineChart = ({ width, height, id, tabId, compId, data, props }: ChartComponentProps) => {
-  // const [compProps, setCompProps] = useState<any>();
+const LineChart = ({ width, height, data, props }: ChartComponentProps) => {
+  const xData = zipWith(data.dimensions[0], data.measures[0], (d, m) => ({ x: d, y: m }));
 
-  // useEffect(
-  //   () =>
-  //     getStore().subscribe(
-  //       (s) => s.sheets.sheets[tabId][id]?.components[compId]?.props, //
-  //       (props) => setCompProps(props),
-  //     ),
-  //   [],
-  // );
-
-  const xData = data.measures;
+  type LineData = ArrayElement<typeof xData>;
 
   xScale.range([0, width]);
+  xScale.domain(data.dimensions[0]);
+
+  const minY = min(data.measures[0]);
+  const maxY = max(data.measures[0]);
+  const rangeY = maxY - minY;
+
   yScale.range([0, height]);
+  yScale.domain([minY - rangeY * 0.05, maxY + rangeY * 0.05]);
+
+  // console.log(xData);
+  // console.log(xScale);
+  // console.log(yScale);
 
   const strokeWidth = props?.['line-thickness'] || defaultProps['line-thickness'];
 
   return (
     <LinePath<LineData>
       curve={Object.values(curves)[props?.['line-curve'] || 0]}
-      data={_data}
+      data={xData}
       x={(d) => xScale(getX(d)) ?? 0}
       y={(d) => yScale(getY(d)) ?? 0}
       stroke={
@@ -155,4 +152,14 @@ export const LineChartErrorCheck: ChartComponentErrorCheck = (data, props) => {
     data.measures.length === 0
   )
     return { title: 'No data loaded' };
+
+  const d = data.dimensions[0];
+
+  for (const m of data.measures) {
+    if (m.length !== d.length)
+      return {
+        title: 'Invalid data',
+        message: `Measures and dimensions don't have matching lengths`,
+      };
+  }
 };
