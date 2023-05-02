@@ -1,25 +1,20 @@
 import { ChartComponentType, charts } from 'bluefire';
 import { MdShowChart } from 'react-icons/md';
-import LineChart, { LineChartProps } from './components/LineChart';
-import XYChart from './components/XYChart';
-
-export interface ChartProps {
-  width: number;
-  height: number;
-  id: string;
-  tabId: string;
-  compId: string;
-}
+import XYChart from './components/AxisComponent';
+import LineChart, { LineChartErrorCheck, LineChartProps } from './components/LineChart';
 
 export const activate = () => {
+  // Chart types
   charts.registerBaseType('bf:xy-chart', 'XY Chart', XYChart);
-  charts.registerComponent(
-    'bf:line-chart',
-    'Line Chart',
-    LineChart,
-    ChartComponentType.CHART,
-    'bf:xy-chart',
-    MdShowChart,
-    LineChartProps,
-  );
+  // Charts
+  charts.registerComponent({
+    id: 'bf:line-chart',
+    name: 'Line Chart',
+    component: LineChart,
+    type: ChartComponentType.CHART,
+    baseType: 'bf:xy-chart',
+    icon: MdShowChart,
+    props: LineChartProps,
+    validation: LineChartErrorCheck,
+  });
 };
