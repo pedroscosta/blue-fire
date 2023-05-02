@@ -1,7 +1,7 @@
 import { lens } from '@dhmk/zustand-lens';
 import { BluefireState, DataSource, LoadedData } from 'bluefire';
 
-export default lens<BluefireState['data']>((set) => {
+export default lens<BluefireState['data']>((set, get) => {
   return {
     dataSources: {},
     dataModel: {
@@ -48,6 +48,15 @@ export default lens<BluefireState['data']>((set) => {
       set((draft) => {
         draft.dataModel.dag = data;
       });
+    },
+
+    queryColumn: (col) => {
+      const state = get().loadedState;
+      const tblName = state.fields[col];
+
+      if (!tblName || !state.tables[tblName]) return undefined;
+
+      return Object.entries(state.tables[tblName]).map(([k, v]) => (v as any)[col]);
     },
   };
 });
