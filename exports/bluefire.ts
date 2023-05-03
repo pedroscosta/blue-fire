@@ -108,9 +108,10 @@ export interface ChartComponent extends ComponentRegister {
   component: ElementType;
   data: {
     name: string;
-    startingData?: Partial<ChartData>;
     baseType: string;
     type: ChartComponentType;
+    startingData?: Partial<ChartData>;
+    allowedDocks?: string[];
     validation?: ChartComponentErrorCheck;
     icon?: ElementType;
   };
@@ -228,8 +229,9 @@ const charts = {
     icon?: ElementType;
     props?: ComponentPropertiesRegister;
     validation?: ChartComponentErrorCheck;
+    allowedDocks?: string[];
   }) => {
-    const { id, name, component, type, baseType, icon, props, validation } = data;
+    const { id, component, type, props, ...rest } = data;
 
     const startingData: Partial<ChartData> | undefined =
       type === ChartComponentType.CHART
@@ -240,7 +242,7 @@ const charts = {
 
     getState().registry.register('bf:chart-components', id, {
       component,
-      data: { name, type, icon, startingData, baseType, validation },
+      data: { ...rest, type, startingData },
     });
 
     getState().chartProps.registerProps(id, props);
