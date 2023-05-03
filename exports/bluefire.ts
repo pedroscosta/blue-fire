@@ -205,7 +205,7 @@ export type ChartComponentErrorCheck = (
   | undefined;
 
 const _store = create<BluefireState>()(
-  devtools(subscribeWithSelector(immer((set) => ({} as BluefireState)))),
+  devtools(subscribeWithSelector(immer(() => ({} as BluefireState)))),
 ); // TODO: Make this type without creating this store (https://github.com/pmndrs/zustand/discussions/1454).
 
 export type BluefireStore = typeof _store;
@@ -219,13 +219,6 @@ export type BluefireStore = typeof _store;
 const getState = () => ((window as any).BluefireStore as BluefireStore).getState();
 
 const charts = {
-  registerBaseType: (id: string, name: string, component: ElementType) => {
-    getState().registry.register('bf:chart-types', id, {
-      component,
-      data: { name },
-    });
-  },
-
   registerComponent: (data: {
     id: string;
     name: string;
