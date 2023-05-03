@@ -6,7 +6,7 @@ import ListButton from '../compoments/ListButton';
 
 const Item = ({ id, type }: { id: string; type: ChartComponent }) => {
   const [, dragRef] = useDrag({
-    type: 'bf:chart-sidebar-item',
+    type: 'bf:component-sidebar-item',
     item: { id, startingData: type.data.startingData || {} },
     collect: (monitor) => ({
       isDragging: monitor.isDragging(),
@@ -23,14 +23,14 @@ const Item = ({ id, type }: { id: string; type: ChartComponent }) => {
   );
 };
 
-const ChartsView = () => {
+const ComponentsView = () => {
   const chartTypes = useStore((s) => s.registry.components['bf:chart-components'] || {});
 
   return (
     <>
       {Object.entries(chartTypes).map(
         ([id, comp]) =>
-          comp.data.type === ChartComponentType.CHART && (
+          comp.data.type === ChartComponentType.ACCESSORY && (
             <Item key={id} id={id} type={comp as ChartComponent} />
           ),
       )}
@@ -38,4 +38,4 @@ const ChartsView = () => {
   );
 };
 
-export default ChartsView;
+export default ComponentsView;

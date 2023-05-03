@@ -1,9 +1,10 @@
 import ChartsPropertiesView from '@/components/navigation/CollapsibleSidebar/views/ChartPropertiesView';
 import ChartsView from '@/components/navigation/CollapsibleSidebar/views/ChartsView';
+import ComponentsView from '@/components/navigation/CollapsibleSidebar/views/ComponentsView';
 import useDataLoading from '@/hooks/logic/useDataLoading';
 import { Button } from '@chakra-ui/react';
 import { BluefireState } from 'bluefire';
-import { MdAddChart, MdOutlineEditNote } from 'react-icons/md';
+import { MdAddChart, MdOutlineEditNote, MdOutlineLibraryAdd } from 'react-icons/md';
 import shallow from 'zustand/shallow';
 import { useStore } from '..';
 
@@ -41,6 +42,13 @@ const initialState: Partial<BluefireState['registry']> = {
         data: {
           icon: MdAddChart,
           title: 'Charts',
+        },
+      },
+      'bf:components-view': {
+        component: ComponentsView,
+        data: {
+          icon: MdOutlineLibraryAdd,
+          title: 'Components',
         },
       },
       'bf:chart-properties-view': {
