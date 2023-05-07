@@ -31,7 +31,7 @@ export interface ChartData {
     dimensions: DataProperty[];
     measures: DataProperty[];
   };
-  components: Record<string, { component: string; props: any }>;
+  components: Record<string, { component: string; props: any; dock: string }>;
 }
 
 export type QueriedChartData = {
@@ -113,6 +113,7 @@ export interface ChartComponent extends ComponentRegister {
     startingData?: Partial<ChartData>;
     allowedDocks?: string[];
     validation?: ChartComponentErrorCheck;
+    sizeCalculator?: ChartComponentSizeCalculator;
     icon?: ElementType;
   };
 }
@@ -193,6 +194,7 @@ export type ChartComponentProps = {
   compId: string;
   data: QueriedChartData;
   dataProps: ChartData['data'];
+  dock: string;
   props: any;
 };
 
@@ -204,6 +206,29 @@ export type ChartComponentErrorCheck = (
 ) =>
   | { title?: string | React.ReactNode; message?: string | React.ReactNode; status?: AlertStatus }
   | undefined;
+
+// Chart components size calculator
+
+export type ChartComponentSizeCalculator = (
+  data: QueriedChartData,
+  props: any,
+  dock: string,
+) => number;
+
+// Register Chart Data
+
+export type RegisterChartData = {
+  id: string;
+  name: string;
+  component: ElementType;
+  type: ChartComponentType;
+  baseType: string;
+  icon?: ElementType;
+  props?: ComponentPropertiesRegister;
+  validation?: ChartComponentErrorCheck;
+  allowedDocks?: string[];
+  sizeCalculator?: ChartComponentSizeCalculator;
+};
 
 const _store = create<BluefireState>()(
   devtools(subscribeWithSelector(immer(() => ({} as BluefireState)))),
@@ -220,23 +245,13 @@ export type BluefireStore = typeof _store;
 const getState = () => ((window as any).BluefireStore as BluefireStore).getState();
 
 const charts = {
-  registerComponent: (data: {
-    id: string;
-    name: string;
-    component: ElementType;
-    type: ChartComponentType;
-    baseType: string;
-    icon?: ElementType;
-    props?: ComponentPropertiesRegister;
-    validation?: ChartComponentErrorCheck;
-    allowedDocks?: string[];
-  }) => {
+  registerComponent: (data: RegisterChartData) => {
     const { id, component, type, props, ...rest } = data;
 
     const startingData: Partial<ChartData> | undefined =
       type === ChartComponentType.CHART
         ? {
-            components: { [nanoid()]: { component: id, props: {} } },
+            components: { [nanoid()]: { component: id, props: {}, dock: 'FULL' } },
           }
         : undefined;
 
