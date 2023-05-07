@@ -7,7 +7,10 @@ import ListButton from '../compoments/ListButton';
 const Item = ({ id, type }: { id: string; type: ChartComponent }) => {
   const [, dragRef] = useDrag({
     type: 'bf:component-sidebar-item',
-    item: { id, startingData: type.data.startingData || {} },
+    item: {
+      id,
+      allowedDocks: type.data.allowedDocks,
+    },
     collect: (monitor) => ({
       isDragging: monitor.isDragging(),
     }),
