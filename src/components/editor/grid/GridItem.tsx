@@ -4,12 +4,14 @@ import { ReactNode, useState } from 'react';
 import { DraggableData, ResizableDelta, Rnd } from 'react-rnd';
 
 import TooltipIconButton from '@/components/inputs/TooltipIconButton';
+import DockableReceiver, { Docks } from '@/components/layout/DockableReceiver';
 import { useStore } from '@/store';
 import { roundObject } from '@/utils/math';
 import { PanelData } from 'bluefire';
+import { nanoid } from 'nanoid';
 import { HiOutlineDatabase } from 'react-icons/hi';
 import { MdAdd } from 'react-icons/md';
-import shallow from 'zustand/shallow';
+import { shallow } from 'zustand/shallow';
 import './GridItem.css';
 
 export type ResizeDirection =
@@ -80,6 +82,7 @@ const GridItem = ({
   const [dragging, setDragging] = useState(false);
 
   const context = useStore((s) => s.context, shallow);
+  const modifyChart = useStore((s) => s.sheets.modifyChart, shallow);
   const selected = context.state['bf:selected-chart-id'] === id;
 
   const popoverPos = getPopoverPosition(panel, gridSize);
@@ -142,6 +145,22 @@ const GridItem = ({
               flexDir="column"
             >
               {children}
+              {!dummy && (
+                <DockableReceiver
+                  accept={['bf:chart-sidebar-item', 'bf:component-sidebar-item']}
+                  docks={{
+                    ...Docks.ATTACH_SIDES,
+                    ...Docks.FULL,
+                  }}
+                  snapDistance="25%"
+                  fallbackDock="FULL"
+                  onDrop={(type, item, dock) =>
+                    modifyChart(tabId, id, (draft) => {
+                      draft.components[nanoid()] = { component: item.id, props: {}, dock };
+                    })
+                  }
+                />
+              )}
             </Box>
           </Box>
         </PopoverAnchor>

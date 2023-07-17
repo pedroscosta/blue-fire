@@ -12,12 +12,60 @@ import {
   Text,
 } from '@chakra-ui/react';
 import { ElementType } from '@react-spring/web';
+import { Group } from '@visx/group';
 import { ParentSize } from '@visx/responsive';
 import { AnyD3Scale } from '@visx/scale';
-import { ChartComponent, ChartComponentProps, QueriedChartData } from 'bluefire';
+import {
+  ChartComponent,
+  ChartComponentData,
+  ChartComponentProps,
+  ChartDataMargins,
+  QueriedChartData,
+} from 'bluefire';
 import { MdDeleteOutline, MdMoreVert } from 'react-icons/md';
 import shallow from 'zustand/shallow';
 import ChartContext from './context';
+
+type ElementPosition = {
+  top: number;
+  left: number;
+  width: number;
+  height: number;
+};
+
+const getElementMargins = (
+  dock: string,
+  margins: ChartDataMargins,
+  parentSize: { width: number; height: number },
+): ElementPosition => {
+  switch (dock) {
+    case 'LEFT':
+      return { top: 0, left: 0, width: margins.LEFT, height: parentSize.height };
+    case 'RIGHT':
+      return {
+        top: 0,
+        left: parentSize.width - margins.RIGHT,
+        width: margins.RIGHT,
+        height: parentSize.height,
+      };
+    case 'TOP':
+      return { top: 0, left: 0, width: parentSize.width, height: margins.TOP };
+    case 'BOTTOM':
+      return {
+        top: parentSize.height - margins.BOTTOM,
+        left: 0,
+        width: parentSize.width,
+        height: margins.BOTTOM,
+      };
+    default:
+      return {
+        top: margins.TOP,
+        left: margins.LEFT,
+        width: parentSize.width - margins.RIGHT - margins.LEFT,
+        height: parentSize.height - margins.BOTTOM - margins.TOP,
+      };
+  }
+};
 
 const BaseChart = ({ tabId, id }: { tabId: string; id: string }) => {
   const [data, registry, removeChart, queryColumn] = useStore(
@@ -34,7 +82,7 @@ const BaseChart = ({ tabId, id }: { tabId: string; id: string }) => {
     measures: data.data.measures.map((v) => queryColumn(v.query) || []),
   };
 
-  for (const [k, v] of Object.entries(data.components)) {
+  for (const v of Object.values(data.components)) {
     const validator = (registry.components['bf:chart-components'][v.component] as ChartComponent)
       ?.data?.validation;
 
@@ -43,6 +91,32 @@ const BaseChart = ({ tabId, id }: { tabId: string; id: string }) => {
 
       if (response) return <ChartError {...response} />;
     }
+  }
+
+  const margins: ChartDataMargins = { TOP: 0, LEFT: 0, BOTTOM: 0, RIGHT: 0 };
+
+  const docks = {
+    TOP: [] as ChartComponentData[],
+    BOTTOM: [] as ChartComponentData[],
+    LEFT: [] as ChartComponentData[],
+    RIGHT: [] as ChartComponentData[],
+    FULL: [] as ChartComponentData[],
+  };
+
+  for (const v of Object.values(data.components)) {
+    (docks as any)[v.dock]?.push(v);
+
+    if (v.dock === 'FULL') continue;
+
+    const sizeCalc = (registry.components['bf:chart-components'][v.component] as ChartComponent)
+      ?.data?.sizeCalculator;
+
+    if (sizeCalc && (margins as any)[v.dock.toUpperCase()] !== undefined)
+      (margins as any)[v.dock.toUpperCase()] += sizeCalc(
+        queriedData,
+        data.components[v.component]?.props,
+        v.dock,
+      );
   }
 
   return (
@@ -55,25 +129,39 @@ const BaseChart = ({ tabId, id }: { tabId: string; id: string }) => {
         <ParentSize parentSizeStyles={{ inset: 0, position: 'absolute' }}>
           {(parent) => (
             <svg width={parent.width} height={parent.height}>
-              {Object.entries(data.components).map(([k, v]) => {
-                const Element = registry.components['bf:chart-components'][v.component]
-                  ?.component as ElementType<ChartComponentProps>;
-                const props = data.components[v.component]?.props;
-
-                if (!Element) return;
+              {Object.entries(docks).map(([dock, components]) => {
+                const elementPosition = getElementMargins(dock, margins, parent);
 
                 return (
-                  <Element
-                    key={k}
-                    width={parent.width}
-                    height={parent.height}
-                    id={id}
-                    tabId={tabId}
-                    compId={k}
-                    props={props || {}}
-                    data={queriedData}
-                    dataProps={data.data}
-                  />
+                  <Group
+                    key={dock}
+                    top={elementPosition.top}
+                    left={elementPosition.left}
+                    width={elementPosition.width}
+                    height={elementPosition.height}
+                  >
+                    {components.map((comp, index) => {
+                      const Element = registry.components['bf:chart-components'][comp.component]
+                        ?.component as ElementType<ChartComponentProps>;
+
+                      if (!Element) return;
+
+                      const props = data.components[comp.component]?.props;
+
+                      return (
+                        <Element
+                          key={index}
+                          width={elementPosition.width}
+                          height={elementPosition.height}
+                          margins={margins}
+                          props={props || {}}
+                          data={queriedData}
+                          dataProps={data.data}
+                          dock={dock}
+                        />
+                      );
+                    })}
+                  </Group>
                 );
               })}
             </svg>

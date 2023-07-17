@@ -52,6 +52,7 @@ const GridLayout = ({ width, height, tabId, gridSize = [24, 24] }: GridLayoutPro
   const [{ isOverCurrent }, dropRef] = useDrop({
     accept: 'bf:chart-sidebar-item',
     hover: (item, monitor) => {
+      if (!isOverCurrent) return;
       if (!ref.current) return;
 
       let pos = monitor.getClientOffset();
@@ -79,6 +80,7 @@ const GridLayout = ({ width, height, tabId, gridSize = [24, 24] }: GridLayoutPro
       if (!isOverCurrent && dummyPanel && dummyPanel.hover) setDummyPanel(undefined);
     },
     drop: (item, monitor) => {
+      if (!isOverCurrent) return;
       if (
         dummyPanel &&
         dummyPanel.hover &&
@@ -88,20 +90,25 @@ const GridLayout = ({ width, height, tabId, gridSize = [24, 24] }: GridLayoutPro
         dummyPanel.y < gridSize[1]
       )
         updateChart(tabId, nanoid(), {
-          series: {},
-          ...(item as any).startingData,
+          ...((item as any).startingData || {}),
           components: {
-            'bf:base-chart': { component: 'bf:base-chart', props: {} },
+            'bf:base-chart': { component: 'bf:base-chart', props: {}, dock: 'NONE' },
             ...(item as any).startingData?.components,
           },
           panelData: { ...dummyPanel, hover: undefined },
+          data: {
+            dimensions: [],
+            measures: [],
+          },
         } as ChartData);
     },
     collect: (monitor) => {
-      if (!monitor.isOver({ shallow: true }) && dummyPanel && dummyPanel.hover)
-        setDummyPanel(undefined);
+      const isOverCurrent = monitor.isOver({ shallow: true });
+
+      if (!isOverCurrent && dummyPanel && dummyPanel.hover) setDummyPanel(undefined);
+
       return {
-        isOverCurrent: monitor.isOver({ shallow: true }),
+        isOverCurrent,
       };
     },
   });
