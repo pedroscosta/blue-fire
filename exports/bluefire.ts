@@ -24,6 +24,8 @@ export enum DataType {
 
 export type DataProperty = { name: string; query: string; type: DataType };
 
+export type ChartComponentData = { component: string; props: any; dock: string };
+
 export interface ChartData {
   panelData: PanelData;
   baseType: string;
@@ -31,7 +33,7 @@ export interface ChartData {
     dimensions: DataProperty[];
     measures: DataProperty[];
   };
-  components: Record<string, { component: string; props: any; dock: string }>;
+  components: Record<string, ChartComponentData>;
 }
 
 export type QueriedChartData = {
@@ -186,12 +188,17 @@ export interface BluefireState {
 
 // Chart components props
 
+export type ChartDataMargins = {
+  TOP: number;
+  LEFT: number;
+  BOTTOM: number;
+  RIGHT: number;
+};
+
 export type ChartComponentProps = {
   width: number;
   height: number;
-  id: string;
-  tabId: string;
-  compId: string;
+  margins: ChartDataMargins;
   data: QueriedChartData;
   dataProps: ChartData['data'];
   dock: string;
