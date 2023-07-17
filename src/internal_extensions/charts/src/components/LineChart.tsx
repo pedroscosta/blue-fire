@@ -1,5 +1,5 @@
 import * as xCurves from '@visx/curve';
-import { scaleBand, scaleLinear } from '@visx/scale';
+import { scaleLinear, scalePoint } from '@visx/scale';
 import { LinePath } from '@visx/shape';
 import {
   ChartComponentErrorCheck,
@@ -9,6 +9,7 @@ import {
   ComponentPropertyType,
 } from 'bluefire';
 import { max, min, zipWith } from 'lodash';
+import { ArrayElement } from '../main';
 
 const curves = {
   Basis: xCurves.curveBasis,
@@ -31,23 +32,12 @@ const curves = {
   'Step (before)': xCurves.curveStepBefore,
 };
 
-const _data = [
-  { x: 10, y: 20 },
-  { x: 20, y: 50 },
-  { x: 30, y: 10 },
-  { x: 40, y: 25 },
-  { x: 50, y: 18 },
-];
-
-type ArrayElement<ArrayType extends readonly unknown[]> =
-  ArrayType extends readonly (infer ElementType)[] ? ElementType : never;
-
 // data accessors
 const getX = (d: any) => d.x;
 const getY = (d: any) => d.y;
 
 // scales
-const xScale = scaleBand<string>({});
+const xScale = scalePoint<string>({});
 
 const yScale = scaleLinear<number>({});
 
@@ -59,6 +49,9 @@ const LineChart = ({ width, height, data, props }: ChartComponentProps) => {
   xScale.range([0, width]);
   xScale.domain(data.dimensions[0]);
 
+  // xScale.paddingInner(1);
+  // xScale.paddingOuter(0);
+
   const minY = min(data.measures[0]);
   const maxY = max(data.measures[0]);
   const rangeY = maxY - minY;
@@ -66,9 +59,7 @@ const LineChart = ({ width, height, data, props }: ChartComponentProps) => {
   yScale.range([0, height]);
   yScale.domain([minY - rangeY * 0.05, maxY + rangeY * 0.05]);
 
-  // console.log(xData);
-  // console.log(xScale);
-  // console.log(yScale);
+  console.log('line', [0, width], xScale('c'));
 
   const strokeWidth = props?.['line-thickness'] || defaultProps['line-thickness'];
 
@@ -76,7 +67,7 @@ const LineChart = ({ width, height, data, props }: ChartComponentProps) => {
     <LinePath<LineData>
       curve={Object.values(curves)[props?.['line-curve'] || 0]}
       data={xData}
-      x={(d) => xScale(getX(d)) ?? 0}
+      x={(d) => (xScale(getX(d)) ?? 0) + xScale.bandwidth() / 2}
       y={(d) => yScale(getY(d)) ?? 0}
       stroke={
         props?.['line-color']

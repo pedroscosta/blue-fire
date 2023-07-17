@@ -6008,6 +6008,11 @@ truncate-utf8-bytes@^1.0.0:
   dependencies:
     utf8-byte-length "^1.0.1"
 
+ts-xor@^1.1.0:
+  version "1.1.0"
+  resolved "https://registry.yarnpkg.com/ts-xor/-/ts-xor-1.1.0.tgz#dc579e04f1ebce219217cee18b0d2685b3b57a8d"
+  integrity sha512-9vtspo9gVrmJR0XQyuNySpr6DhZztCDWS8LT5CO4gSeifILDRi4e8QZ0ixnvCyob9hMYRaOeo+OyW3ovhngjuA==
+
 tsconfck@^2.0.1:
   version "2.0.2"
   resolved "https://registry.yarnpkg.com/tsconfck/-/tsconfck-2.0.2.tgz#860a488f9acd024a85b2db458888410009b5383d"
