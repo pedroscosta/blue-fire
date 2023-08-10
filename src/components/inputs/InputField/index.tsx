@@ -14,7 +14,7 @@ const InputField = ({ children, ...rest }: InputFieldProps) => {
   const Stack = inline ? HStack : VStack;
 
   return (
-    <Stack textAlign="left" alignItems={inline ? 'center' : 'normal'}>
+    <Stack textAlign="left" alignItems={inline ? 'center' : 'normal'} width="100%">
       {Children.map(children, (child) =>
         isValidElement(child) ? cloneElement(child, rest) : child,
       )}
