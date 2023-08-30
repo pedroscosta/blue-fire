@@ -1,4 +1,5 @@
 import ChartError from '@/components/feedback/ChartError';
+import { generateScales } from '@/data/scales';
 import { useStore } from '@/store';
 import {
   Box,
@@ -14,7 +15,6 @@ import {
 import { ElementType } from '@react-spring/web';
 import { Group } from '@visx/group';
 import { ParentSize } from '@visx/responsive';
-import { AnyD3Scale } from '@visx/scale';
 import {
   ChartComponent,
   ChartComponentData,
@@ -24,7 +24,6 @@ import {
 } from 'bluefire';
 import { MdDeleteOutline, MdMoreVert } from 'react-icons/md';
 import shallow from 'zustand/shallow';
-import ChartContext from './context';
 
 type ElementPosition = {
   top: number;
@@ -72,10 +71,6 @@ const BaseChart = ({ tabId, id }: { tabId: string; id: string }) => {
     (s) => [s.sheets.sheets[tabId][id], s.registry, s.sheets.removeChart, s.data.queryColumn],
     shallow,
   );
-  const series: Record<string, AnyD3Scale> = {};
-  const setSeries = (id: string, scale: AnyD3Scale) => {
-    series[id] = scale;
-  };
 
   const queriedData: QueriedChartData = {
     dimensions: data.data.dimensions.map((v) => queryColumn(v.query) || []),
@@ -92,6 +87,11 @@ const BaseChart = ({ tabId, id }: { tabId: string; id: string }) => {
       if (response) return <ChartError {...response} />;
     }
   }
+
+  const scales = {
+    dimensions: data.data.dimensions.map((i) => generateScales(i.type, i.scaleProps)),
+    measures: data.data.measures.map((i) => generateScales(i.type, i.scaleProps)),
+  };
 
   const margins: ChartDataMargins = { TOP: 0, LEFT: 0, BOTTOM: 0, RIGHT: 0 };
 
@@ -120,7 +120,7 @@ const BaseChart = ({ tabId, id }: { tabId: string; id: string }) => {
   }
 
   return (
-    <ChartContext.Provider value={{ series, setSeries }}>
+    <>
       <Text fontSize={'lg'} fontWeight={'semibold'} paddingLeft={2}>
         {data.components['bf:base-chart']?.props?.['chart-title']}
       </Text>
@@ -158,6 +158,7 @@ const BaseChart = ({ tabId, id }: { tabId: string; id: string }) => {
                           data={queriedData}
                           dataProps={data.data}
                           dock={dock}
+                          scales={scales}
                         />
                       );
                     })}
@@ -193,7 +194,7 @@ const BaseChart = ({ tabId, id }: { tabId: string; id: string }) => {
           </MenuList>
         </Portal>
       </Menu>
-    </ChartContext.Provider>
+    </>
   );
 };
 

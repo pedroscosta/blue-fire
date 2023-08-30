@@ -1,5 +1,4 @@
 import * as xCurves from '@visx/curve';
-import { scaleLinear, scalePoint } from '@visx/scale';
 import { LinePath } from '@visx/shape';
 import {
   ChartComponentErrorCheck,
@@ -10,6 +9,7 @@ import {
 } from 'bluefire';
 import { max, min, zipWith } from 'lodash';
 import { ArrayElement } from '../main';
+import { getBandwidth } from '../utils/safeAcessors';
 
 const curves = {
   Basis: xCurves.curveBasis,
@@ -36,21 +36,16 @@ const curves = {
 const getX = (d: any) => d.x;
 const getY = (d: any) => d.y;
 
-// scales
-const xScale = scalePoint<string>({});
+const LineChart = ({ width, height, data, props, scales }: ChartComponentProps) => {
+  const xScale = scales.dimensions[0];
+  const yScale = scales.measures[0];
 
-const yScale = scaleLinear<number>({});
-
-const LineChart = ({ width, height, data, props }: ChartComponentProps) => {
   const xData = zipWith(data.dimensions[0], data.measures[0], (d, m) => ({ x: d, y: m }));
 
   type LineData = ArrayElement<typeof xData>;
 
   xScale.range([0, width]);
   xScale.domain(data.dimensions[0]);
-
-  // xScale.paddingInner(1);
-  // xScale.paddingOuter(0);
 
   const minY = min(data.measures[0]);
   const maxY = max(data.measures[0]);
@@ -59,15 +54,13 @@ const LineChart = ({ width, height, data, props }: ChartComponentProps) => {
   yScale.range([0, height]);
   yScale.domain([minY - rangeY * 0.05, maxY + rangeY * 0.05]);
 
-  console.log('line', [0, width], xScale('c'));
-
   const strokeWidth = props?.['line-thickness'] || defaultProps['line-thickness'];
 
   return (
     <LinePath<LineData>
       curve={Object.values(curves)[props?.['line-curve'] || 0]}
       data={xData}
-      x={(d) => (xScale(getX(d)) ?? 0) + xScale.bandwidth() / 2}
+      x={(d) => (xScale(getX(d)) ?? 0) + getBandwidth(xScale) / 2}
       y={(d) => yScale(getY(d)) ?? 0}
       stroke={
         props?.['line-color']

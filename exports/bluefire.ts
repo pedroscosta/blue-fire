@@ -1,5 +1,6 @@
 import { AlertStatus } from '@chakra-ui/react';
 import * as convert from '@uiw/color-convert';
+import { AnyD3Scale } from '@visx/scale';
 import { nanoid } from 'nanoid';
 import { ElementType } from 'react';
 import { create } from 'zustand';
@@ -22,7 +23,12 @@ export enum DataType {
   CATEGORY,
 }
 
-export type DataProperty = { name: string; query: string; type: DataType };
+export type DataProperty = {
+  name: string;
+  query: string;
+  type: DataType;
+  scaleProps: Record<string, any>;
+};
 
 export type ChartComponentData = { component: string; props: any; dock: string };
 
@@ -195,11 +201,17 @@ export type ChartDataMargins = {
   RIGHT: number;
 };
 
+export type ChartDataScales = {
+  dimensions: AnyD3Scale[];
+  measures: AnyD3Scale[];
+};
+
 export type ChartComponentProps = {
   width: number;
   height: number;
   margins: ChartDataMargins;
   data: QueriedChartData;
+  scales: ChartDataScales;
   dataProps: ChartData['data'];
   dock: string;
   props: any;

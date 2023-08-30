@@ -1,3 +1,5 @@
+import NumericalSliderField from '@/components/forms/fields/NumericalSliderField';
+import Form from '@/components/forms/Form';
 import InputField from '@/components/inputs/InputField';
 import Select, { Group, Option } from '@/components/inputs/Select';
 import TooltipIconButton from '@/components/inputs/TooltipIconButton';
@@ -17,13 +19,45 @@ import {
 import { DataProperty, DataType } from 'bluefire';
 import { chakraComponents, DropdownIndicatorProps, PlaceholderProps } from 'chakra-react-select';
 import { chain, findIndex } from 'lodash';
-import { useState } from 'react';
+import { ReactNode, useState } from 'react';
 import { MdAdd, MdModeEdit, MdOutlineDelete } from 'react-icons/md';
 
 const dataTypeOptions: { value: DataType; label: string }[] = [
   { value: DataType.CATEGORY, label: 'Categorical' },
   { value: DataType.NUMBER, label: 'Number' },
 ];
+
+const scalePropFields: Record<DataType, ReactNode> = {
+  [DataType.CATEGORY]: (
+    <>
+      <NumericalSliderField
+        name="band-band"
+        title="Width"
+        caption="Band width"
+        min={0}
+        max={1}
+        step={0.01}
+        precision={0.01}
+      />
+      {/* <NumericalField name="band-band" title="Band" caption="Band width" min={0} max showStepper /> */}
+      <NumericalSliderField
+        name="band-align"
+        title="Align"
+        caption="Values alignment within the band"
+        min={0}
+        max={1}
+        step={0.01}
+        precision={0.01}
+      />
+    </>
+  ),
+  [DataType.NUMBER]: undefined,
+};
+
+const defaultScaleProps: Record<string, any> = {
+  'band-band': 0,
+  'band-align': 0.5,
+};
 
 type DataItemProps = {
   value: DataProperty;
@@ -73,6 +107,13 @@ const DataItem = ({ index, value, removeItem, openItem, isOpen, updateItem }: Da
               containerProps={{ w: '60%' }}
             />
           </InputField>
+          <Form
+            values={value.scaleProps}
+            defaultValues={defaultScaleProps}
+            onSubmit={(scaleProps) => updateItem(index, { ...value, scaleProps })}
+          >
+            {scalePropFields[value.type]}
+          </Form>
         </Box>
       </Collapse>
     </Box>
@@ -163,7 +204,12 @@ const DataSelector = ({ type, data, updateDataProps }: DataSelectorProps) => {
           onChange={(val: any) =>
             updateDataProps(type, [
               ...data,
-              { name: val.label, query: val.label, type: DataType.NUMBER },
+              {
+                name: val.label,
+                query: val.label,
+                type: DataType.NUMBER,
+                scaleProps: defaultScaleProps,
+              },
             ])
           }
           // @ts-ignore
